@@ -11,7 +11,7 @@ import movieEight from './image/movieEight.jpg';
 
 const SearchResult = () => {
   const handleSearch = () => {
-    window.location.href = 'searchResultPage.html';
+    window.location.href = 'searchResultPage';
   };
 
   const handleNavigation = (url) => {
@@ -23,7 +23,7 @@ const SearchResult = () => {
       <header className="header">
         <div className="search-container">
           <input type="text" placeholder="Search Dramas" />
-          <i onClick={handleSearch}></i>
+          <i onClick={handleSearch} className='bx bx-search'></i>
         </div>
 
         <div className="dropdown-container">
@@ -34,8 +34,7 @@ const SearchResult = () => {
 
         <div className="user-buttons-container">
           <div className="user-buttons">
-            <button onClick={() => handleNavigation('login.html')}>Login</button>
-            <button onClick={() => handleNavigation('register.html')}>Register</button>
+            <button onClick={() => handleNavigation('login')}>Login</button>
           </div>
         </div>
       </header>
@@ -66,7 +65,7 @@ const Sidebar = () => {
   return (
     <section className="sidebar">
       <header>
-        <a href="home.html" style={{ textDecoration: 'none' }}>DramaKu</a>
+        <a href="/" style={{ textDecoration: 'none' }}>DramaKu</a>
       </header>
       {["Japan", "Korea", "China"].map((item, index) => (
         <li key={index}>{item}</li>
@@ -94,14 +93,19 @@ const MainContent = () => {
 };
 
 const Card = ({ imgSrc }) => {
+  const handleCardClick = () => {
+    window.location.href = 'detailPage';
+  };
   return (
-    <div className="card">
-      <img src={imgSrc} alt="movie" />
-      <div className="card-content">
+    <div className="card-search">
+      <div className="card-search-content">
+      <img src={imgSrc} onClick={handleCardClick} alt="movie" />
+      <div className="card-search-info">
         <h3>Title of the drama that makes two lines</h3>
         <p>2024</p>
         <p>Genre 1, Genre 2, Genre 3</p>
         <p>Rate 3.5/5 19 views</p>
+      </div>
       </div>
     </div>
   );

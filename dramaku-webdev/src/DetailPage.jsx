@@ -9,9 +9,9 @@ import actorFourImg from './image/actorFourImg.jpg';
 import actorFiveImg from './image/actorFiveImg.jpg';
 import actorSixImg from './image/actorSixImg.jpg';
 
-const SearchResult = () => {
+const DetailPage = () => {
     const handleSearch = () => {
-        window.location.href = 'searchResultPage.html';
+        window.location.href = 'searchResultPage';
     };
 
     return (
@@ -19,7 +19,7 @@ const SearchResult = () => {
         <header className="header">
             <div className="search-container">
             <input type="text" placeholder="Search Dramas" />
-            <i onClick={handleSearch}></i>
+            <i onClick={handleSearch} className= "bx bx-search"></i>
             </div>
         </header>
 
@@ -33,7 +33,7 @@ const Sidebar = () => {
     return (
       <section className="sidebar">
         <header>
-          <a href="home.html" style={{ textDecoration: 'none' }}>DramaKu</a>
+          <a href="/" style={{ textDecoration: 'none' }}>DramaKu</a>
         </header>
       </section>
     );
@@ -142,4 +142,4 @@ const MainContent = () => {
   );
 };
 
-export default SearchResult;
+export default DetailPage;

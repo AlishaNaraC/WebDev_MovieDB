@@ -50,31 +50,51 @@
                 </nav>
             </div>
             <div class="col-md-8 column-content">
-                <div>
-                    <h1>Input New Drama</h1>
-                </div>
                 <div class="input-container">
                     <div class="input-content">
-                        <p>Title</p>
-                        <input type="text" id="title" name="title" required>
-                        <p>Alternative Title</p>
-                        <input type="text" id="altTitle" name="altTitle">
+                        <div class="input-content-input">
+                            <p>Title</p>
+                            <input type="text" id="title" name="title" required>
+                        </div>
+                        <div class="input-content-input">
+                            <p>Alternative Title</p>
+                            <input type="text" id="altTitle" name="altTitle">
+                        </div>
+                    </div>
+                    
+                    <div class="input-content-2">
+                        <div class="dropdown">
+                            <div class="select">
+                                <span class="selected">Year</span>
+                                <div class="caret"></div>
+                            </div>
+                            <ul class="dropdown-menu">
+                                <li>2021</li>
+                                <li>2020</li>
+                                <li>2019</li>
+                                <li>2018</li>
+                                <li>2017</li>
+                            </ul>
+                        </div>
+                        <div class="input-content-input">
+                            <p>Country</p>
+                            <input type="text" id="country" name="country" required>
+                        </div>
+                    </div>
+            
+                    <div class="input-content"> 
+                        <div class="input-content-input">
+                            <p>Synopsis</p>
+                            <input type="textarea" id="duration" name="duration" required>
+                        </div>
                     </div>
                     <div class="input-content">
-                        <p>Year</p>
-                        <input type="text" id="year" name="year" required>
-                        <p>Country</p>
-                        <input type="text" id="country" name="country" required>
+                        <div class="input-content-input">
+                            <p>Availability</p>
+                            <input type="text" id="availability" name="availability" required>
+                        </div>
                     </div>
-                    <div class="input-content">
-                        <p>Synopsis</p>
-                        <input type="text" id="duration" name="duration" required>
-                    </div>
-                    <div class="input-content">
-                        <p>Availability</p>
-                        <input type="text" id="availability" name="availability" required>
-                    </div>
-                    <div class="input-content">
+                    <div class="input-content-genre">
                         <p>Add Genre</p>
                         <ul>
                             <li>
@@ -167,30 +187,66 @@
                     </div>
             
                     <div class="input-content">
-                        <div class="input-actor-card-container">
-                            <p>Add Actors</p>
-                            <input type="text" id="actor" name="actor" required>
+                        <div class="input-actor">
+                            <p>Add Actors (Up to 9)</p>
+                            <input type="text2" placeholder="Search Actor Names">
+                            <i onclick="window.location.href=''" class='bx bx-search'></i>
                             
-                            <div class="input-actor-card">
-                                <img src="image\imageactress.jpeg">
-                                <p>actor 1</p>
-                            </div>
-                            <div class="input-actor-card">
-                                <img src="image\imageactress.jpeg">
-                                <p>actor 1</p>
+                            <div class="input-actor-card-container">
+                                <div class="input-actor-card">
+                                    <img src="image/actorOne.jpg">
+                                    <p>actor 1</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorTwo.jpg">
+                                    <p>actor 2</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorThree.jpg">
+                                    <p>actor 3</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorFour.jpg">
+                                    <p>actor 4</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorFive.jpg">
+                                    <p>actor 5</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorSix.jpg">
+                                    <p>actor 6</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorSeven.jpg">
+                                    <p>actor 7</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorEight.jpg">
+                                    <p>actor 8</p>
+                                </div>
+                                <div class="input-actor-card">
+                                    <img src="image/actorNine.jpg">
+                                    <p>actor 9</p>
+                                </div>
                             </div>
                         </div>
                     </div>
             
                     <div class="input-content">
-                        <p>Link Trailer</p>
-                        <input type="text" id="trailer" name="trailer" required>
-                        <p>Award</p>
-                        <input type="text" id="award" name="award" required>
+                        <div class="input-content-input">
+                            <p>Link Trailer</p>
+                            <input type="text" id="trailer" name="trailer" required>
+                        </div>
+                        <div class="input-content-input">
+                            <p>Award</p>
+                            <input type="text" id="award" name="award" required>
+                        </div> 
                     </div>
-                </div>
-                <div>
-                    <button class="btn btn-more btn-primary" type="submit">Submit</button>
+            
+                    <div class="user-buttons">
+                        <button type="submit" class="btn">Submit</button>
+                    </div>
                 </div>
             </div>                  
         </div>

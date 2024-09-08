@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'/>
+    <script src="script.js"></script>
+    <title>Detail Page</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="search-container">
+            <input type="text" placeholder="Search Dramas">
+            <i onclick="window.location.href='searchResultPage.html'" class='bx bx-search'></i>
+        </div>
+    </header>
+
+    <section class="sidebar">
+        <header class="header">
+            <a href="home.html" style="text-decoration:none">DramaKu</a>
+        </header>
+    </section> 
+
+    <main class="main">
+        <div class="card-container">
+            <div class="card-right">
+                <div class="card-right-content">
+                    <img src="image\movieOne.jpg">
+                    <div class="card-right-info">
+                        <h3>Title of the drama 1 that makes two lines</h3>
+                        <p>Other Titles</p>
+                        <p>2024</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Rate 3,5/5 19 views</p>
+                        <p>Availability</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actor-card-container">
+            <div class="actor-card">
+                <img src="image/actorOne.jpg">
+                <div class="actor-card-content">
+                    <h3>Actor 1</h3>
+                    <p>Role 1</p>
+                </div>
+            </div>
+
+            <div class="actor-card">
+                <img src="image/actorTwo.jpg">
+                <div class="actor-card-content">
+                    <h3>Actor 2</h3>
+                    <p>Role 2</p>
+                </div>
+            </div>
+
+            <div class="actor-card">
+                <img src="image/actorThree.jpg">
+                <div class="actor-card-content">
+                    <h3>Actor 3</h3>
+                    <p>Role 3</p>
+                </div>
+            </div>
+
+            <div class="actor-card">
+                <img src="image/actorFour.jpg">
+                <div class="actor-card-content">
+                    <h3>Actor 4</h3>
+                    <p>Role 4</p>
+                </div>
+            </div>
+
+                <div class="actor-card">
+                    <img src="image/actorFive.jpg">
+                    <div class="actor-card-content">
+                        <h3>Actor 5</h3>
+                        <p>Role 5</p>
+                    </div>
+                </div>
+
+                <div class="actor-card">
+                    <img src="image\actorSix.jpg">
+                    <div class="actor-card-content">
+                        <h3>Actor 6</h3>
+                        <p>Role 6</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-video-container">
+            <iframe width="1040" height="505"
+                src="https://www.youtube.com/embed/tgbNymZ7vqY">
+            </iframe>
+        </div>
+
+        <div class="review-container">
+            <div class="row">
+                <div style="display: inline-block">
+                    <h3>(4) People think about this drama</h3>
+                </div>
+                <div style="display: inline-block">
+                    <label>Filtered by:</label>
+                    <i class="bx bx-star"></i><i class="bx bx-star"></i><i class="bx bx-star"></i><i class="bx bx-star"></i>
+                </div>
+            </div>
+
+            <div class="review-card">
+                <p>Nara (4/4/2014) said : It is a wonderful drama! I Love it so much!!! I need long comments to see how it is being seen in the display.</p>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+            </div>
+            <div class="review-card">
+                <p>Nara (4/4/2014) said : It is a wonderful drama! I Love it so much!!!</p>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+            </div>
+            <div class="review-card">
+                <p>Nara (4/4/2014) said : It is a wonderful drama! I Love it so much!!!</p>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+                <i class="bx bx-star"></i>
+            </div>
+            <div class="review-card">
+                <p>Nara (4/4/2014) said : It is a wonderful drama! I Love it so much!!!</p>
+                <label>
+                    <i class="bx bx-star"></i>
+                    <i class="bx bx-star"></i>
+                    <i class="bx bx-star"></i>
+                    <i class="bx bx-star"></i>
+                </label>
+            </div>
+
+            <div class="add-review">
+                <h3>Add Your Review!</h3>
+                <p>Name: <input type="text" class="review-input"></p>
+                <p>Rate: 
+                    <i class="bx bx-star review-star"></i>
+                    <i class="bx bx-star review-star"></i>
+                    <i class="bx bx-star review-star"></i>
+                    <i class="bx bx-star review-star"></i>
+                </p> 
+                <p>Your Thoughts: <textarea class="review-textarea"></textarea></p>
+                <label>You can only submit your review once.</label>
+                <div class="submit-review">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

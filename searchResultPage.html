@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'/>
+    <script src="script.js"></script>
+    <title>Search Result</title>
+</head>
+
+<body>
+    <header class="header">
+
+        <div class="search-container">
+            <input type="text" placeholder="Search Dramas">
+            <i onclick="window.location.href='searchResultPage.html'" class='bx bx-search'></i>
+        </div>
+
+        <div class="dropdown-container">
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected">Year</span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>2021</li>
+                    <li>2020</li>
+                    <li>2019</li>
+                    <li>2018</li>
+                    <li>2017</li>
+                </ul>
+            </div>
+    
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected">Genre</span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>Action</li>
+                    <li>Adventure</li>
+                    <li>Comedy</li>
+                    <li>Drama</li>
+                    <li>Fantasy</li>
+                    <li>Horror</li>
+                    <li>Mystery</li>
+                    <li>Romance</li>
+                    <li>Thriller</li>
+                </ul>
+            </div>
+    
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected">Status</span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>Completed</li>
+                    <li>Ongoing</li>
+                </ul>
+            </div>
+    
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected">Availability</span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>Free</li>
+                    <li>Paid</li>
+                </ul>
+            </div>
+    
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected">Award</span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>Yes</li>
+                    <li>No</li>
+                </ul>
+            </div>
+    
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected">Sorted By</span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>Alphabet</li>
+                    <li>Rating</li>
+                    <li>Year</li>
+                    <li>Views</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="user-buttons-container">
+            <div class="user-buttons">
+                <button onclick="window.location.href='login.html'">Login</button>
+                <button onclick="window.location.href='register.html'">Register</button>
+            </div>
+        </div>
+
+    </header>
+
+    <section class="sidebar">
+        <header>
+        <a href="home.html" style="text-decoration:none">DramaKu</a>
+        </header>
+        <li>Japan</li>
+        <li>Korea</li>
+        <li>China</li>
+    </section>
+
+    <main class="main">
+        <div class="card-container-result">
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieOne.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 1 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieTwo.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 2 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieThree.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 3 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieFour.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 4 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieFive.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 5 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieSix.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 6 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieSeven.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 7 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieEight.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 8 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieNine.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 9 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>  
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieTen.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 10 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieEleven.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 11 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-search">
+                <div class="card-search-content">
+                    <img src="image\movieTwelve.jpg" onclick="window.location.href='detailPage.html'">
+                    <div class="card-search-info">
+                        <h3>Title of the drama 12 that makes two lines</h3>
+                        <p>2024</p>
+                        <p>Genre 1, Genre 2, Genre 3</p>
+                        <p>Actor 1, Actor 2, Actor 3</p>
+                        <p>19 views</p>
+                    </div>
+                </div>
+            </div>
+</body>
+
+</html>
