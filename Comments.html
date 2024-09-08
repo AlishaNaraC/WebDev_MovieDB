@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-light" style="background-color: darkblue">
         <div class="container-fluid">
-            <a class="navbar-dramaku" href="#">DramaKu</a>
+            <a class="navbar-dramaku" href="WebDev_MovieDB\home.html">DramaKu</a>
           <!-- <form class="d-flex mx-auto" style="width: 300px;">
             <input class="form-control" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-light" type="submit">Search</button>
@@ -44,7 +44,7 @@
                         <div class="collapse" id="submenu2">
                             <nav class="nav nav-pills flex-column">
                                 <a class="nav-link ms-3 my-1 custom-link" href="Profile.html">Profile</a>
-                                <a class="nav-link ms-3 my-1 custom-link" href="Logout.html">Logout</a>
+                                <a class="nav-link ms-3 my-1 custom-link" href="WebDev_MovieDB\home.html">Logout</a>
                             </nav>
                         </div>
                     </nav>
@@ -68,7 +68,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-6">
                             <div class="dropdown">
                                 <label for="dropdownshows" class="btn-label me-2">Shows:</label>
                                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownshows" data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,6 +80,11 @@
                                     <li><a class="dropdown-item" href="#">100</a></li>
                                 </ul>
                             </div>
+                        </div>
+                        <div class="col-md-2 search-container">
+                            <input type="text" placeholder="Search Drama">
+                            <i class='bx bx-search'></i>
+                            <!-- onclick="window.location.href='searchResultPage.html'" -->
                         </div>
                     </div>
                     <table class="table table-hover" >

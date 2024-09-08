@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-light" style="background-color: darkblue">
         <div class="container-fluid">
-            <a class="navbar-dramaku" href="#">DramaKu</a>
+            <a class="navbar-dramaku" href="WebDev_MovieDB\home.html">DramaKu</a>
           <!-- <form class="d-flex mx-auto" style="width: 300px;">
             <input class="form-control" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-light" type="submit">Search</button>
@@ -44,7 +44,7 @@
                         <div class="collapse" id="submenu2">
                             <nav class="nav nav-pills flex-column">
                                 <a class="nav-link ms-3 my-1 custom-link" href="Profile.html">Profile</a>
-                                <a class="nav-link ms-3 my-1 custom-link" href="Logout.html">Logout</a>
+                                <a class="nav-link ms-3 my-1 custom-link" href="WebDev_MovieDB\home.html">Logout</a>
                             </nav>
                         </div>
                     </nav>
@@ -63,6 +63,11 @@
                             <input class="form-control me-5" id="input-data-forms" type="email" aria-label="Email">
                             <button class="btn btn-light" type="submit">Submit</button>
                         </form>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" placeholder="Search Country">
+                        <i class='bx bx-search'></i>
+                        <!-- onclick="window.location.href='searchResultPage.html'" -->
                     </div>
                     <table class="table table-hover" >
                         <thead>
@@ -91,6 +96,23 @@
                         </tbody>
                     </table>
                 </div>
+                <nav aria-label="users-page"></nav>
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item">
+                            <a class="page-link" href="#">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item" aria-current="page">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>            
         </div>
     </div>
