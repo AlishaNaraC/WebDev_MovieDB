@@ -14,10 +14,11 @@ code {
 
 @import url("https://fonts.googleapis.com/css2?family=popins:wght@300;400;500;600;700&display=swap");
 
-.custom-link {
+.custom-link a {
     color: #000000;
     text-decoration: none;
     transition: 0.15s;
+    font-weight:bold;
 }
 
 .custom-link:hover{
@@ -58,7 +59,7 @@ code {
     margin-top: 20px;
     border-collapse: separate;
     border-spacing: 0;
-    width: 100%;
+    width:100%;
     border-radius: 5px;
     overflow: hidden;
     color:#ffffff;
@@ -67,7 +68,7 @@ code {
 }
 
 #table-container{
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 th, td {
@@ -97,11 +98,13 @@ th, td {
     background-color: #d60f0f;
 }
 
-#forms-input {
+#forms-submit {
     margin-bottom: 20px;
     border-radius: 10px;
     background-color: rgb(227, 228, 230);
     height:auto;
+    padding: 3px 0px;
+    /* width:100%; */
 }
 
 .column-content{
@@ -109,9 +112,9 @@ th, td {
 }
 
 #input-data-forms {
-    margin-left: 7px;
+    margin-left: 15px;
     width: 200px;
-    height: 30px;
+    height: 35px;
 }
 
 #input-image {
@@ -139,8 +142,8 @@ th, td {
 .form-label {
     margin-right: 10px;
     margin-left: 10px;
-    margin-top: 3px;
-    font-weight:400;
+    margin-top: 15px;
+    font-size: large;
 }
 
 .form-control {
@@ -199,9 +202,17 @@ th, td {
     font-family: 'Poppins', sans-serif;
 }
 
+.container-fluid {
+    padding: 0;
+}
+
 body{
     display: flex;
     justify-content: center;
+}
+
+div.viewport-cms{
+    width: 70vw;
 }
 
 .header{
@@ -212,9 +223,23 @@ body{
   display: flex;
 }
 
+.headercms {
+    background-color: darkblue;
+    padding: 10px;
+    position: relative; /* Maintain relative positioning */
+    width:auto; /* Full width of the viewport */
+    box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+.sidebar-button {
+    position: absolute;
+}
+
 .logo-container{
     color : white;
-}
+    margin-top: 10px;
+    margin-left: 50px;
+} 
 
 .search-container{
     z-index: 1;
@@ -250,24 +275,32 @@ body{
     cursor: pointer;
 }
 
-.search-actor-container input,
-.search-drama-container input,
-.search-country-container input,
-.search-genre-container input{
+.search-cms-container input{
     width: 180px;
     font-size: 15px;
     padding: 10px 10px;
     border-radius: 8px;
     border: none;
     box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
     transition: 0.4s ease-in-out;
 }
 
-.search-actor-container input:focus,
-.search-drama-container input:focus,
-.search-country-container input:focus,
-.search-genre-container input:focus{
+.search-cms-container input:focus{
     width: 200px;
+}
+
+.search-cms-container i{
+    position:absolute;
+    margin-top: 15px;
+    margin-right: 5px;
+    color: black;
+    cursor: pointer;
+}
+
+.search-cms-container{
+    display: flex;
+    justify-content: flex-end;
 }
 
 .search-actor-container i{
@@ -426,6 +459,20 @@ body{
     justify-content: center;
     align-items: center;
     margin: 20px;
+}
+
+.card-right-info h2::before{
+    content: 'Completed';
+    position: absolute;
+    top: -33px;
+    color: white;
+    font-size : 20px;
+    border-radius: 50px;
+    width: 115px;
+    background-color: green;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
 }
 
 .card img{

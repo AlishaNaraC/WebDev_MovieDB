@@ -1,4 +1,5 @@
 import movieOne from '../image/movieOne.jpg';
+import '../index.css';
 
 function CardDetail(){
     return (

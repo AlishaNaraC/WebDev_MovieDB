@@ -1,68 +1,56 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 import './script.js';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import HeaderCMS from './components/HeaderCMS';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table'
+import Pagination from 'react-bootstrap/Pagination';
 
 function Countries() {
   return (
     <div>
-      <nav className="navbar navbar-light" style={{ backgroundColor: 'darkblue' }}>
-        <div className="container-fluid">
-          <a className="navbar-dramaku" href="WebDev_MovieDB/home.html">DramaKu</a>
-          {/* <form className="d-flex mx-auto" style={{ width: '300px' }}>
-            <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-light" type="submit">Search</button>
-          </form> */}
-        </div>
-      </nav>
+      <Container fluid>
+        <Row>
+          <Col md={12}>
+            <HeaderCMS/>
+          </Col>
+        </Row>
 
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-2">
-            <nav id="list-item" className="navbar navbar-light p-3" style={{ backgroundColor: 'transparent' }}>
-              <nav className="nav nav-pills flex-column">
-              <a className="nav-link custom-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenu1">Dramas</a>
-                <div className="collapse" id="submenu1">
-                  <nav className="nav nav-pills flex-column">
-                    <a className="nav-link ms-3 my-1 custom-link" href="ValidateDramas">Validate</a>
-                    <a className="nav-link ms-3 my-1 custom-link" href="InputDramas">Input New Drama</a>
-                  </nav>
-                </div>
-                <a className="nav-link custom-link" href="Countries">Countries</a>
-                <a className="nav-link custom-link" href="Awards">Awards</a>
-                <a className="nav-link custom-link" href="Genres">Genres</a>
-                <a className="nav-link custom-link" href="Actors">Actors</a>
-                <a className="nav-link custom-link" href="Comments">Comments</a>
-                <a className="nav-link custom-link" href="Users">Users</a>
-                <a className="nav-link custom-link" data-bs-toggle="collapse" href="#" data-bs-target="#submenu2">Account</a>
-                <div className="collapse" id="submenu2">
-                  <nav className="nav nav-pills flex-column">
-                    <a className="nav-link ms-3 my-1 custom-link" href="Profile">Profile</a>
-                    <a className="nav-link ms-3 my-1 custom-link" href="/">Logout</a>
-                  </nav>
-                </div>
-              </nav>
-            </nav>
-          </div>
-
-          <div className="col-md-8 column-content">
-            <div>
+        <Row>
+          <Col md={12} className='viewport-cms'>
+            <div className="column-content">
               <h1>Countries</h1>
             </div>
             <div id="table-container" className="content-section">
-              <div id="forms-input">
-                <form className="d-flex align-items-center mx-auto" style={{ padding: '10px' }}>
-                  <label htmlFor="input-data-forms" className="form-label">Country</label>
-                  <input className="form-control" id="input-data-forms" type="text" aria-label="Country" />
-                  <button className="btn btn-light" type="submit">Submit</button>
-                </form>
+              <div id="forms-submit">
+                <Form>
+                  <Row className="align-items-center">
+                    <Col sm={1}>
+                      <Form.Label htmlFor="inlineFormInput" id="input-data-forms">Country</Form.Label>
+                    </Col>
+                    <Col sm={3}>
+                      <Form.Control type='text' id="input-data-forms" placeholder='country'/>
+                    </Col>
+                    <Col xs="auto">
+                      <Button variant='secondary' type='submit'>Submit</Button>
+                    </Col>
+                  </Row>
+                </Form>
               </div>
-              <div className="search-country-container">
-                <input type="text" placeholder="Search Country" />
-                <i className='bx bx-search'></i>
-                {/* <button onClick={() => window.location.href='searchResultPage.html'}>Search</button> */}
+
+              <div className="search-cms-container">
+                  <input type="text" placeholder="Search Country" />
+                  <i className='bx bx-search'></i>
               </div>
-              <table className="table table-hover">
+
+              <Table striped hover className='table w-100' responsive="sm">
                 <thead>
                   <tr>
                     <th scope="col"></th>
@@ -75,54 +63,38 @@ function Countries() {
                     <th scope="row">1</th>
                     <td>USA</td>
                     <td>
-                      <i className="fa-regular fa-pen-to-square custom-link2" />
-                      <span> | </span>
-                      <i className="fa-regular fa-trash-can custom-link2" />
+                        <FontAwesomeIcon icon={faPenToSquare} className="custom-link2" /> | <FontAwesomeIcon icon={faTrashCan} className="custom-link2" />
                     </td>
                   </tr>
                   <tr className="table-light">
                     <th scope="row">2</th>
                     <td>Canada</td>
                     <td>
-                      <i className="fa-regular fa-pen-to-square custom-link2" />
-                      <span> | </span>
-                      <i className="fa-regular fa-trash-can custom-link2" />
+                        <FontAwesomeIcon icon={faPenToSquare} className="custom-link2" /> | <FontAwesomeIcon icon={faTrashCan} className="custom-link2" />
                     </td>
                   </tr>
                   <tr className="table-light">
                     <th scope="row">3</th>
                     <td>Brazil</td>
                     <td>
-                      <i className="fa-regular fa-pen-to-square custom-link2" />
-                      <span> | </span>
-                      <i className="fa-regular fa-trash-can custom-link2" />
+                        <FontAwesomeIcon icon={faPenToSquare} className="custom-link2" /> | <FontAwesomeIcon icon={faTrashCan} className="custom-link2" />
                     </td>
                   </tr>
                 </tbody>
-              </table>
+              </Table>
             </div>
-            <nav aria-label="countries-page">
-              <ul className="pagination justify-content-end">
-                <li className="page-item">
-                  <a className="page-link" href="#">Previous</a>
-                </li>
-                <li className="page-item active">
-                  <a className="page-link" href="#">1</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">2</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">3</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </div>
+
+            <Pagination className='justify-content-end'>
+              <Pagination.Prev />
+              <Pagination.Item active>{1}</Pagination.Item>
+              <Pagination.Item>{2}</Pagination.Item>
+              <Pagination.Item>{3}</Pagination.Item>
+              <Pagination.Next />
+            </Pagination>
+
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

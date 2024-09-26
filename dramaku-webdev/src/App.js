@@ -14,6 +14,7 @@ import Genres from './Genres';
 import Countries from './Countries';
 import VaildateDramas from './ValidateDramas';
 import Users from './Users';
+import Profile from './Profile';
 import NotFound from './NotFound';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/Countries" element={<Countries />} />
         <Route path="/ValidateDramas" element={<VaildateDramas />} />
         <Route path="/Users" element={<Users />} />
+        <Route path="/Profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -1,87 +1,60 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './script.js';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import './index.css';
+import HeaderCMS from './components/HeaderCMS';
+import { Button, ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Container, Row, Col, Table, Pagination } from 'react-bootstrap';
 
 function Comments() {
     return (
-        <div>
-          <nav className="navbar navbar-light" style={{ backgroundColor: 'darkblue' }}>
-            <div className="container-fluid">
-              <a className="navbar-dramaku" href="WebDev_MovieDB/home.html">DramaKu</a>
-              {/* <form className="d-flex mx-auto" style={{ width: '300px' }}>
-                <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
-                <button className="btn btn-light" type="submit">Search</button>
-              </form> */}
-            </div>
-          </nav>
-    
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-md-2">
-                <nav id="list-item" className="navbar navbar-light p-3" style={{ backgroundColor: 'transparent' }}>
-                  <nav className="nav nav-pills flex-column">
-                      <a className="nav-link custom-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenu1">Dramas</a>
-                    <div className="collapse" id="submenu1">
-                      <nav className="nav nav-pills flex-column">
-                        <a className="nav-link ms-3 my-1 custom-link" href="ValidateDramas">Validate</a>
-                        <a className="nav-link ms-3 my-1 custom-link" href="InputDramas">Input New Drama</a>
-                      </nav>
-                    </div>
-                    <a className="nav-link custom-link" href="Countries">Countries</a>
-                    <a className="nav-link custom-link" href="Awards">Awards</a>
-                    <a className="nav-link custom-link" href="Genres">Genres</a>
-                    <a className="nav-link custom-link" href="Actors">Actors</a>
-                    <a className="nav-link custom-link" href="Comments">Comments</a>
-                    <a className="nav-link custom-link" href="Users">Users</a>
-                    <a className="nav-link custom-link" data-bs-toggle="collapse" href="#" data-bs-target="#submenu2">Account</a>
-                    <div className="collapse" id="submenu2">
-                      <nav className="nav nav-pills flex-column">
-                        <a className="nav-link ms-3 my-1 custom-link" href="Profile">Profile</a>
-                        <a className="nav-link ms-3 my-1 custom-link" href="/">Logout</a>
-                      </nav>
-                    </div>
-                  </nav>
-                </nav>
-              </div>
-              <div className="col-md-8 column-content">
-                <div>
+          <Container fluid>
+            <Row>
+              <Col md={12}>
+                <HeaderCMS/>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={12} className='viewport-cms'>
+                <div className='column-content'>
                   <h1>Comments</h1>
                 </div>
                 <div id="table-container" className="content-section">
-                  <div className="row">
-                    <div className="col-md-3">
-                      <div className="dropdown">
+                  <Row>
+                    <Col className='md-3'>
+                      <Dropdown>
                         <label htmlFor="dropdownapprove-filter" className="btn-label me-2">Filtered by:</label>
-                        <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownapprove-filter" data-bs-toggle="dropdown" aria-expanded="false">
+                        <Dropdown.Toggle variant='secondary' id='dropdownapprove-filter'>
                           None
-                        </button>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownapprove-filter">
-                          <li><a className="dropdown-item" href="#">Approved</a></li>
-                          <li><a className="dropdown-item" href="#">Unapproved</a></li>
-                        </ul>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.Item href='#'>Approved</Dropdown.Item>
+                          <Dropdown.Item href='#'>Unapproved</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Col>
+                    <Col className='md-6'>
+                      <Dropdown>
+                          <label htmlFor="dropdownshows" className="btn-label me-2">Shows:</label>
+                          <Dropdown.Toggle variant='secondary' id="dropdownshows">
+                            10
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item href='#'>25</Dropdown.Item>
+                            <Dropdown.Item href='#'>50</Dropdown.Item>
+                            <Dropdown.Item href='#'>100</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                    </Col>
+                    <Col className='md-2'>
+                      <div className="search-cms-container">
+                          <input type="text" placeholder="Search Comment" />
+                          <i className='bx bx-search'></i>
                       </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="dropdown">
-                        <label htmlFor="dropdownshows" className="btn-label me-2">Shows:</label>
-                        <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownshows" data-bs-toggle="dropdown" aria-expanded="false">
-                          10
-                        </button>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownshows">
-                          <li><a className="dropdown-item" href="#">25</a></li>
-                          <li><a className="dropdown-item" href="#">50</a></li>
-                          <li><a className="dropdown-item" href="#">100</a></li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="col-md-2 search-drama-container">
-                      <input type="text" placeholder="Search Drama" />
-                      <i className='bx bx-search'></i>
-                      {/* <button onClick={() => window.location.href='searchResultPage.html'}>Search</button> */}
-                    </div>
-                  </div>
-                  <table className="table table-hover">
+                    </Col>
+                  </Row>
+
+                  <Table striped hover className='table' responsive="sm">
                     <thead>
                       <tr>
                         <th scope="col"></th>
@@ -118,50 +91,41 @@ function Comments() {
                         <td>Approved</td>
                       </tr>
                     </tbody>
-                  </table>
+                  </Table>
                 </div>
-                <div className="row">
-                  <div className="col-md-4 act-comment">
-                    <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
-                      <div className="btn-group" role="group">
-                        <button id="btnGroupDrop1" type="button" className="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                          Select
-                        </button>
-                        <ul className="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                          {/* <li><a className="dropdown-item" href="#" onClick={() => selectAllComment()}>All</a></li>
-                          <li><a className="dropdown-item" href="#" onClick={() => selectUnappComment()}>Unapproved</a></li>
-                          <li><a className="dropdown-item" href="#" onClick={() => selectAppComment()}>Approved</a></li>
-                          <li><a className="dropdown-item" href="#" onClick={() => selectNoneComment()}>None</a></li> */}
-                        </ul>
-                      </div>
-                      <button type="button" className="btn btn-primary">Approve</button>
-                      <button type="button" className="btn btn-danger">Delete</button>
-                    </div>
-                  </div>
-                  <div className="col-md-8">
-                    <nav aria-label="comments-page">
-                      <ul className="pagination justify-content-end">
-                        <li className="page-item">
-                          <a className="page-link" href="#">Previous</a>
-                        </li>
-                        <li className="page-item active"><a className="page-link" href="#">1</a></li>
-                        <li className="page-item">
-                          <a className="page-link" href="#">2</a>
-                        </li>
-                        <li className="page-item">
-                          <a className="page-link" href="#">3</a>
-                        </li>
-                        <li className="page-item">
-                          <a className="page-link" href="#">Next</a>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+                <Row>
+                  <Col className='md-4 act-comment'>
+                    <ButtonGroup>
+                        <DropdownButton as={ButtonGroup} title="Select" id="bg-nested-dropdown" variant="outline-secondary">
+                          <Dropdown.Item eventKey="1">All</Dropdown.Item>
+                          <Dropdown.Item eventKey="2">Unapproved</Dropdown.Item>
+                          <Dropdown.Item eventKey="3">Approved</Dropdown.Item>
+                          <Dropdown.Item eventKey="4">None</Dropdown.Item>
+                          {/* <ul className="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <li><a className="dropdown-item" href="#" onClick={() => selectAllComment()}>All</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={() => selectUnappComment()}>Unapproved</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={() => selectAppComment()}>Approved</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={() => selectNoneComment()}>None</a></li>
+                          </ul> */}
+                        </DropdownButton>
+                        <Button variant="primary">Approve</Button>
+                        <Button variant="danger">Delete</Button>
+                      </ButtonGroup>
+                  </Col>
+                  <Col className='md-4'>
+                    <Pagination className='justify-content-end'>
+                      <Pagination.Prev />
+                      <Pagination.Item active>{1}</Pagination.Item>
+                      <Pagination.Item>{2}</Pagination.Item>
+                      <Pagination.Item>{3}</Pagination.Item>
+                      <Pagination.Next />
+                    </Pagination>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Container>
     );
 }
 

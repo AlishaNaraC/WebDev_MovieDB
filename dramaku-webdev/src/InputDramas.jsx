@@ -1,5 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import './index.css';
+import HeaderCMS from './components/HeaderCMS';
 import actorOneImg from './image/actorOneImg.jpeg';
 import actorTwoImg from './image/actorTwoImg.jpg';
 import actorThreeImg from './image/actorThreeImg.jpg';
@@ -9,47 +11,20 @@ import actorSixImg from './image/actorSixImg.jpg';
 import actorSevenImg from './image/actorSevenImg.jpg';
 import actorEightImg from './image/actorEightImg.jpg';
 import actorNineImg from './image/actorNineImg.jpg';
+import { Container, Row, Col, Button } from "react-bootstrap";
 
 const DramaInput = () => {
     return (
-        <>
-          <nav className="navbar navbar-light" style={{ backgroundColor: "darkblue" }}>
-            <div className="container-fluid">
-              <a className="navbar-dramaku" href="WebDev_MovieDB/home.html">DramaKu</a>
-              {/* <form className="d-flex mx-auto" style={{ width: "300px" }}>
-                <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
-                <button className="btn btn-light" type="submit">Search</button>
-              </form> */}
-            </div>
-          </nav>
-    
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-md-2">
-                <nav id="list-item" className="navbar navbar-light p-3" style={{ backgroundColor: "transparent" }}>
-                  <nav className="nav nav-pills flex-column">
-                    <a className="nav-link custom-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenu1">Dramas</a>
-                    <div className="collapse" id="submenu1">
-                      <nav className="nav nav-pills flex-column">
-                        <a className="nav-link ms-3 my-1 custom-link" href="ValidateDramas">Validate</a>
-                        <a className="nav-link ms-3 my-1 custom-link" href="InputDramas">Input New Drama</a>
-                      </nav>
-                    </div>
-                    <a className="nav-link custom-link" href="Countries">Countries</a>
-                    <a className="nav-link custom-link" href="Awards">Awards</a>
-                    <a className="nav-link custom-link" href="Genres">Genres</a>
-                    <a className="nav-link custom-link" href="Actors">Actors</a>
-                    <a className="nav-link custom-link" href="Comments">Comments</a>
-                    <a className="nav-link custom-link" href="Users">Users</a>
-                    <a className="nav-link custom-link" data-bs-toggle="collapse" href="#" data-bs-target="#submenu2">Account</a>
-                    <div className="collapse" id="submenu2">
-                      <nav className="nav nav-pills flex-column">
-                        <a className="nav-link ms-3 my-1 custom-link" href="Profile">Profile</a>
-                        <a className="nav-link ms-3 my-1 custom-link" href="/">Logout</a>
-                      </nav>
-                    </div>
-                  </nav>
-                </nav>
+        <Container>
+          <Row>
+            <Col>
+              <HeaderCMS/>
+            </Col>
+          </Row>
+          <Row>
+            <Col className='viewport-cms'>
+              <div className="column-content">
+                  <h1>Input New Drama</h1>
               </div>
               <div className="col-md-8 column-content">
                 <div className="input-container">
@@ -273,13 +248,13 @@ const DramaInput = () => {
                   </div>
     
                   <div className="user-buttons">
-                    <button type="submit" className="btn">Submit</button>
+                    <Button variant='secondary' type='submit'>Submit</Button>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </>
+            </Col>
+          </Row>
+        </Container>
       );
     };
 
