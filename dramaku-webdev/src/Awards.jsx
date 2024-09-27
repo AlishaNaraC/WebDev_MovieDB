@@ -24,15 +24,15 @@ function Awards() {
                 <div id="table-container" className="content-section">
                     <div id="forms-submit">
                       <Form className="row g-3 mx-auto">
-                        <Form.Group className="col-md-4 mb-3">
+                        <Form.Group className="col-md-4">
                           <Form.Label>Country</Form.Label>
                           <Form.Control type="text" placeholder="Country" />
                         </Form.Group>
-                        <Form.Group className="col-md-4 mb-3">
+                        <Form.Group className="col-md-4">
                           <Form.Label>Award</Form.Label>
                           <Form.Control type="text" placeholder="Award" />
                         </Form.Group>
-                        <Form.Group className="col-md-4 mb-3">
+                        <Form.Group className="col-md-4">
                           <Form.Label>Year</Form.Label>
                           <Form.Control type="text" placeholder="Year" />
                         </Form.Group>
@@ -50,7 +50,7 @@ function Awards() {
                     <Table hover>
                       <thead>
                         <tr>
-                          <th>#</th>
+                          <th></th>
                           <th>Countries</th>
                           <th>Years</th>
                           <th>Awards</th>

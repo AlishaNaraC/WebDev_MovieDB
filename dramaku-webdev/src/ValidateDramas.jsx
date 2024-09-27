@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import './script.js';
@@ -27,6 +27,7 @@ const handleCloseModal = () => {
 
 const dramas = [
   {
+    contributor: 'SeriesStreamer',
     title: 'Young Sheldon',
     actors: 'Iain Armitage',
     genres: 'Comedy, Drama',
@@ -34,6 +35,7 @@ const dramas = [
     status: 'Unapproved',
   },
   {
+    contributor: 'asdfghjkl',
     title: 'Dark',
     actors: 'German people',
     genres: 'Thriller, Mystery, Sci-Fi',
@@ -95,6 +97,7 @@ const dramas = [
                 <thead>
                     <tr>
                       <th scope="col"></th>
+                      <th scope="col">Contributor</th>
                       <th scope="col">Drama</th>
                       <th scope="col" className="med-column">Actors</th>
                       <th scope="col" className="med-column">Genres</th>
@@ -109,6 +112,7 @@ const dramas = [
                         <th scope="row">
                           <input type="checkbox" name="check" value="Value 1" />
                         </th>
+                        <td>{drama.contributor}</td>
                         <td>{drama.title}</td>
                         <td>{drama.actors}</td>
                         <td>{drama.genres}</td>

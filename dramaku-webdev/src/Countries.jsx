@@ -35,7 +35,7 @@ function Countries() {
                     <Col sm={1}>
                       <Form.Label htmlFor="inlineFormInput" id="input-data-forms">Country</Form.Label>
                     </Col>
-                    <Col sm={3}>
+                    <Col sm="auto">
                       <Form.Control type='text' id="input-data-forms" placeholder='country'/>
                     </Col>
                     <Col xs="auto">
