@@ -1,20 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../index.css';
 
 
 function Header() {
-const handleSearchClick = () => {
-  window.location.href = 'searchResultPage';
-};
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearchClick = () => {
+    if (searchTerm) {
+      window.location.href = `/search?query=${searchTerm}`;
+    }
+  };
 
-const handleLoginClick = () => {
-  window.location.href = 'login';
-};
+  const handleLoginClick = () => {
+    window.location.href = 'login';
+  };
 
-const handleLogoClick = () => {
-  window.location.href = '/';
-}
-
+  const handleLogoClick = () => {
+    window.location.href = '/';
+  }
       
 return (
   <header className="header">
@@ -22,7 +24,7 @@ return (
         <h1 onClick={handleLogoClick} style={{ textDecoration: 'none' }} ><b>DramaKu</b></h1>
       </div>
       <div className="search-container">
-        <input type="text" placeholder="Search Dramas" />
+        <input type="text" placeholder="Search Dramas" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
         <i className='bx bx-search' onClick={handleSearchClick}></i>
       </div>
 
