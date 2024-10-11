@@ -4,9 +4,16 @@ import '../index.css';
 
 function Header() {
   const [searchTerm, setSearchTerm] = useState("");
+
   const handleSearchClick = () => {
     if (searchTerm) {
       window.location.href = `/search?query=${searchTerm}`;
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchClick();
     }
   };
 
@@ -24,12 +31,14 @@ return (
         <h1 onClick={handleLogoClick} style={{ textDecoration: 'none' }} ><b>DramaKu</b></h1>
       </div>
       <div className="search-container">
-        <input type="text" placeholder="Search Dramas" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+        <input type="text" placeholder="Search Dramas" value={searchTerm} 
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}/>
         <i className='bx bx-search' onClick={handleSearchClick}></i>
       </div>
 
       <div className="dropdown-container">
-        <p>Filtered by: </p>
+        <p style={{color: 'white', paddingRight:'10px'}}>Filtered by: </p>
         {['Country', 'Year', 'Genre', 'Status', 'Availability', 'Award', 'Sorted By'].map((category, index) => (
           <div className="dropdown" key={index}>
             <div className="select">

@@ -14,7 +14,7 @@ app.get("/movies", async(req,res) =>
         try {
             const allMovie = await pool.query(
             `SELECT d.*,
-                    STRING_AGG(g.genres, ', ') AS genres
+                    STRING_AGG(DISTINCT g.genres, ', ') AS genres
              FROM dramas d
              JOIN genre_drama gd ON d.drama_id = gd.drama_id
              JOIN genres g ON gd.genre_id = g.genre_id
@@ -31,8 +31,35 @@ app.get("/movie/:id", async(req,res) =>
     {
         try {
             const {id} = req.params;
-            const movie = await pool.query("SELECT * FROM dramas WHERE drama_id = $1", [id]);
-            res.json(movie.rows[0])
+            const movie = await pool.query( 
+                `SELECT d.*,
+                    STRING_AGG(DISTINCT g.genres, ', ') AS genres,
+                    STRING_AGG(DISTINCT a.availability, ', ') AS avail
+                FROM dramas d
+                JOIN genre_drama gd ON d.drama_id = gd.drama_id
+                JOIN genres g ON gd.genre_id = g.genre_id
+                LEFT JOIN avail_drama ad ON d.drama_id = ad.drama_id
+                LEFT JOIN availability a ON ad.avail_id = a.avail_id
+                WHERE d.drama_id = $1
+                GROUP BY d.drama_id`, 
+            [id]);
+
+            const actors = await pool.query(
+                `SELECT a.actor_name, a.actor_poster
+                FROM actors a
+                JOIN actor_drama ad ON a.actor_id = ad.actor_id
+                WHERE ad.drama_id = $1`,
+                [id]
+            );
+
+            const movieDetails = {
+                ...movie.rows[0],
+                actors: actors.rows.map(actor => ({
+                    name: actor.actor_name,
+                    poster: actor.actor_poster
+                }))
+            };
+            res.json(movieDetails);
         } catch (err) {
             console.error(err.message);
         }        
