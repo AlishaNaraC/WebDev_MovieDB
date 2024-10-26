@@ -42,7 +42,8 @@ app.get("/movies", async(req,res) =>
              FROM dramas d
              JOIN genre_drama gd ON d.drama_id = gd.drama_id
              JOIN genres g ON gd.genre_id = g.genre_id
-             GROUP BY d.drama_id`);
+             GROUP BY d.drama_id
+             ORDER BY d.title ASC`);
             res.json(allMovie.rows);
         } catch (err) {
             console.error(err.message);
@@ -91,19 +92,33 @@ app.get("/movie/:id", async(req,res) =>
 )
 
 // Search movies by title or actor
+        // const searchResult = await pool.query(
+        //     `SELECT d.*, 
+        //             STRING_AGG(DISTINCT g.genres, ', ') AS genres 
+        //      FROM dramas d
+        //      JOIN genre_drama gd ON d.drama_id = gd.drama_id
+        //      JOIN genres g ON gd.genre_id = g.genre_id
+        //      JOIN actor_drama ad ON d.drama_id = ad.drama_id
+        //      JOIN actors a ON ad.actor_id = a.actor_id
+        //      WHERE LOWER(d.title) LIKE LOWER($1) OR LOWER(a.actor_name) LIKE LOWER($1)
+        //      GROUP BY d.drama_id
+        //      ORDER BY d.title ASC`,
+        //     [`%${query}%`] // Add wildcards for partial matching
+        // );
+
 app.get("/search", async(req, res) => {
     try {
         const { query } = req.query;
         const searchResult = await pool.query(
             `SELECT d.*, 
                     STRING_AGG(DISTINCT g.genres, ', ') AS genres 
-             FROM dramas d
-             JOIN genre_drama gd ON d.drama_id = gd.drama_id
-             JOIN genres g ON gd.genre_id = g.genre_id
-             JOIN actor_drama ad ON d.drama_id = ad.drama_id
-             JOIN actors a ON ad.actor_id = a.actor_id
-             WHERE LOWER(d.title) LIKE LOWER($1) OR LOWER(a.actor_name) LIKE LOWER($1)
-             GROUP BY d.drama_id`,
+                FROM dramas d
+                JOIN genre_drama gd ON d.drama_id = gd.drama_id
+                JOIN genres g ON gd.genre_id = g.genre_id
+                JOIN actor_drama ad ON d.drama_id = ad.drama_id
+                JOIN actors a ON ad.actor_id = a.actor_id
+                WHERE LOWER(d.title) LIKE LOWER($1) OR LOWER(a.actor_name) LIKE LOWER($1)
+                GROUP BY d.drama_id`,
             [`%${query}%`] // Add wildcards for partial matching
         );
         
@@ -111,7 +126,7 @@ app.get("/search", async(req, res) => {
     } catch (err) {
         console.error(err.message);
     }
-});
+});        
 
 // register new user
 app.post("/register", async (req, res) => {
@@ -157,6 +172,7 @@ app.post("/login", async (req, res) =>{
     }
 });
 
+// Login with google
 app.post('/google-auth', async (req, res) => {
     const { token } = req.body;
 
@@ -166,8 +182,6 @@ app.post('/google-auth', async (req, res) => {
             audience: process.env.CLIENT_ID,  // Ensure this matches
         });
         const payload = ticket.getPayload();
-        console.log('Payload:', payload);
-
         const userId = payload.sub;
         const email = payload.email;
         const name = payload.name;
@@ -199,6 +213,50 @@ app.post('/google-auth', async (req, res) => {
     } catch (error) {
         console.error('Google Token Verification Error:', error); // Log error for debugging
         res.status(401).json({ error: "Invalid Google token" });
+    }
+});
+
+// add review/comment
+app.post("/reviews", async(req, res) =>{
+    let approve = 'Unapproved'; // Default approval
+    try {
+        const {username, id, rating, comment} = req.body;
+
+        const existingReview = await pool.query(
+            'SELECT * FROM comments WHERE username = $1 AND drama_id = $2',
+            [username, id]
+        );
+    
+        if (existingReview.rows.length > 0) {
+            return res.status(400).json({ error: "You have already submitted a review for this movie." });
+        }
+
+        const addreview = await pool.query(
+            `INSERT INTO comments (username, drama_id, rate, comment, approval) 
+            VALUES ($1, $2, $3, $4, $5) 
+            RETURNING *`,
+            [username, id, rating, comment, approve]
+        );   
+        res.json(addreview);     
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+// get all review in a movie
+app.get("/reviews/:id", async(req,res) =>{
+    const {id} = req.params;
+    try {
+        const allReviews = await pool.query(
+        `SELECT c.*
+            FROM comments c
+            JOIN dramas d ON d.drama_id = c.drama_id
+            WHERE c.drama_id = $1
+            ORDER BY c.created_at ASC`,
+        [id]);
+        res.json(allReviews.rows);
+    } catch (err) {
+        console.error(err.message);
     }
 });
 

@@ -78,7 +78,14 @@ function Register() {
           </div>
   
           <div className="input-box">
-            <input type="password" placeholder="Password" onChange={e => setValues({...values, password: e.target.value})} required />
+            <input 
+              type="password" 
+              placeholder="Password"
+              minLength={8} 
+              title='Password must be at least 8 characters long'
+              onChange={e => setValues({...values, password: e.target.value})} 
+              required 
+            />
           </div>
   
           <button type="submit" className="btn">Register</button>

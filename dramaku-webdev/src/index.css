@@ -212,7 +212,7 @@ body{
 }
 
 div.viewport-cms{
-    width: 70vw;
+    width: 80vw;
 }
 
 .header{
@@ -478,11 +478,18 @@ div.viewport-cms{
 .card img{
     width: 250px;
     height: 350px;
-    object-fit: cover;
+    object-fit:cover; /* Will fit the image within the bounds without cropping */
+    object-position: center;
 }
 
 .card-content{
     padding: 16px;
+    margin-left: 15px; /* Left margin */
+    margin-right: 15px; /* Right margin */
+    flex-grow: 1; /* Allow content to grow */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: space-between;
 }
 
 .card-content h3{
@@ -493,7 +500,7 @@ div.viewport-cms{
 .card-content p{    
     font-size: 15px;
     color: #666;
-   line-height: 1.3;
+    line-height: 1.3;
 }
 
 .actor-card-container{
@@ -978,4 +985,12 @@ div.viewport-cms{
     display: flex;
     justify-content: center;
     margin-top: 10px;
+}
+
+.toTop{
+    cursor: pointer;
+}
+
+input[type="radio"]{
+    display: none;
 }

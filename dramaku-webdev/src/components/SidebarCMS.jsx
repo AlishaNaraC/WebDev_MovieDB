@@ -22,8 +22,8 @@ function SidebarCMS(){
         if (token) {
             const decodedToken = jwtDecode(token.split('=')[1]); 
             if (decodedToken.role !== 'Admin') {
-                alert('You are not authorized to access this page.');
-                navigate('/login');
+                // alert('You are not authorized to access this page.');
+                navigate('/NotFound');
             }
         } else {
             alert('Please log in to access the CMS.');

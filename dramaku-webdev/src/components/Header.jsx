@@ -18,7 +18,7 @@ function Header() {
   };
 
   const handleLoginClick = () => {
-    window.location.href = 'login';
+    window.location.href = '/login';
   };
 
   const handleLogoClick = () => {
@@ -85,4 +85,3 @@ function getDropdownOptions(category) {
         return [];
     }
   }
-
