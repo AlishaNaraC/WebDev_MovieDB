@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-function CardSearch({ id, imgSrc, title, releaseDate, genres, rating, views }) {
+function CardSearch({ id, imgSrc, title, releaseDate, genres, rating, views, country }) {
     const navigate = useNavigate();
 
     const handleCardClick = (id) => {
@@ -15,6 +15,7 @@ function CardSearch({ id, imgSrc, title, releaseDate, genres, rating, views }) {
                     <h3>{title}</h3>
                     <p>{releaseDate}</p>
                     <p>{genres}</p>
+                    <p>{country}</p> 
                     <p>Rate {rating}/5 | {views} views</p>
                 </div>
             </div>

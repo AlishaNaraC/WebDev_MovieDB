@@ -26,7 +26,6 @@ function SidebarCMS(){
                 navigate('/NotFound');
             }
         } else {
-            alert('Please log in to access the CMS.');
             navigate('/login');
         }
     }, [navigate]);

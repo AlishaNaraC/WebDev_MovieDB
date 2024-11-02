@@ -127,7 +127,7 @@ function DetailPage() {
                 <div className="container mb-3">
                     <div className="detail-video-container">
                         <iframe
-                            width="100%" // Changed width to 100% for responsiveness
+                            width="100%"
                             height="605"
                             src={movie.trailer}
                             title="Drama Trailer"

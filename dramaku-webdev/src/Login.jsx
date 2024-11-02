@@ -9,6 +9,7 @@ function Login() {
     })
 
     const navigate = useNavigate();
+    
     const handleLogin = async (e) => {
       e.preventDefault();
 
@@ -26,6 +27,8 @@ function Login() {
 
         if (response.ok) {
           navigate(`/`);
+        } else if(response.status === 403){
+          alert("Your account has been suspended.")
         } else {
           alert(jsonData.error || 'Login failed');
         }
