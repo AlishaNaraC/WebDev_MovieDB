@@ -55,7 +55,7 @@ function Card() {
               <h3>{movie.title}</h3>
               <p>{movie.release_d}</p>
               <p>{movie.genres}</p>
-              <p>Rate {movie.rating}/5 | {movie.tviews} views</p>
+              <p>Rate {movie.rating ? movie.rating : "0.0"}/5</p>
             </div>
           </div>
         ))}

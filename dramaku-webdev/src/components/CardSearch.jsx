@@ -16,7 +16,7 @@ function CardSearch({ id, imgSrc, title, releaseDate, genres, rating, views, cou
                     <p>{releaseDate}</p>
                     <p>{genres}</p>
                     <p>{country}</p> 
-                    <p>Rate {rating}/5 | {views} views</p>
+                    <p>Rate {rating ? rating : "0.0"}/5</p>
                 </div>
             </div>
         </div>

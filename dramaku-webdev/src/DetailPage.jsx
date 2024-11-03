@@ -74,7 +74,7 @@ function DetailPage() {
                 body: JSON.stringify(body)
             });
             if (response.ok) {
-                const newReview = { user_id: username, drama_id: id, rate: rating, comment, created_at: new Date().toISOString() };
+                const newReview = { username, drama_id: id, rate: rating, comment, created_at: new Date().toISOString() };
                 setReviews(prevReviews => [...prevReviews, newReview]);
                 setComment("");
                 setRating(null);
