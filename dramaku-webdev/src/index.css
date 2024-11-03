@@ -149,6 +149,14 @@ th, td {
 .form-control {
     border: 1px solid #ced4da;
     padding: 0.1rem 0.5rem;
+    transition: width 0.2s ease-in-out;
+    transition: height 0.2s ease-in-out;
+    text-align: left;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    border-color: #80bdff;
 }
 
 .btn-light{
@@ -210,6 +218,12 @@ body{
     display: flex;
     justify-content: center;
 }
+
+.viewport-cms {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
 
 div.viewport-cms{
     width: 70vw;
@@ -732,67 +746,21 @@ div.viewport-cms{
 
 .input-content {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Change to column layout */
+    gap: 20px; /* Add gap between elements */
     margin-bottom: 20px;
 }
 
-.input-content-2{
-    display: flex;
-    
-    align-items: center;
-    margin-bottom: 20px;
+.input-content-input {
+    width: 100%; /* Take full width */
 }
 
-.input-content-genre {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.input-content-genre p {
-    flex-basis: 20%;
-    margin: 0 10px 0 0;
-    font-weight: bold;
-    color: #333;
-}
-
-.input-content-genre ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-}
-
-.input-content p {
-    flex-basis: 20%;
-    margin: 0 10px 0 0;
-    font-weight: bold;
-    color: #333;
-}
-
-.input-content textarea{
-    width: 800px;
+/* Update input styles */
+.input-content input[type="text"],
+.input-content input[type="text2"],
+.input-content textarea {
+    width: 100%; /* Take full width */
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s ease;
-    height: 100px;
-}
-
-.input-content textarea:focus{
-    border-color: #007bff;
-    outline: none;
-}
-
-.input-content input[type="text"] {
-    width: 390px;
-    padding: 10px;
-    margin-right: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -800,23 +768,23 @@ div.viewport-cms{
     height: 40px;
 }
 
-.input-content input[type="text2"] {
-    width: 780px;
-    padding: 10px;
-    margin-right: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s ease;
-    height: 40px;
+/* Update input-content-2 class */
+.input-content-2 {
+    display: flex;
+    gap: 20px; /* Add gap between elements */
+    margin-bottom: 20px;
 }
 
-.input-content input[type="text"]:focus,
-.input-content input[type="text2"]:focus,
-.input-content input[type="textarea"]:focus,
-.input-content-2 input[type="text"]:focus {
-    border-color: #007bff;
-    outline: none;
+.input-content-2 .input-content-input {
+    flex: 1; /* Make inputs take equal width */
+}
+
+/* Update input labels */
+.input-content p,
+.input-content-2 p {
+    margin: 0 0 8px 0; /* Add bottom margin to labels */
+    font-weight: bold;
+    color: #333;
 }
 
 .input-content-2 input[type="text"] {
@@ -973,3 +941,22 @@ div.viewport-cms{
         height: auto;
     }
 }
+
+/* Adjust table cell padding for better textarea fit */
+.table td, .table th {
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Make sure the table accommodates expanding content */
+.table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Style for non-editing text */
+.table td > div {
+  min-height: 24px; /* Match the initial height of textarea */
+  padding: 4px 0;
+}
+
