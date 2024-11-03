@@ -13,6 +13,18 @@ function Genres() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [genreToDelete, setGenreToDelete] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const indexLastItem = currentPage * itemsPerPage;
+  const indexFirstItem = indexLastItem - itemsPerPage;
+  const currentGenres = genres.slice(indexFirstItem, indexLastItem);
+  const totalPages = Math.ceil(genres.length/itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     fetchGenres();
@@ -30,6 +42,11 @@ function Genres() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (genres.some(genre => genre.genres === newGenre)) {
+      alert('This genre already exists. Please enter a different genre.'); // You can replace this with a more user-friendly modal or toast notification
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:5000/genres', {
         method: 'POST',
@@ -40,11 +57,14 @@ function Genres() {
         const newGenreData = await response.json();
         setGenres(prevGenres => [...prevGenres, newGenreData]);
         setNewGenre('');
+        setSubmitSuccess(true);
       }
     } catch (error) {
       console.error('Error adding genre:', error);
     }
   };
+
+  const handleClose = () => setSubmitSuccess(false);
 
   const handleEdit = (genre) => {
     setEditingGenre({ ...genre });
@@ -96,7 +116,7 @@ function Genres() {
     setGenreToDelete(null);
   };
 
-  const filteredGenres = genres.filter(genre =>
+  const filteredGenres = currentGenres.filter(genre =>
     genre.genres.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -158,7 +178,7 @@ function Genres() {
                 <tbody>
                   {filteredGenres.map((genre, index) => (
                     <tr key={genre.genre_id} className="table-light">
-                      <th scope="row">{index + 1}</th>
+                      <th scope="row">{index + 1 + (currentPage - 1) * itemsPerPage}</th>
                       <td>
                         {editingGenre && editingGenre.genre_id === genre.genre_id ? (
                           <input
@@ -198,11 +218,23 @@ function Genres() {
             </div>
 
             <Pagination className='justify-content-end'>
-              <Pagination.Prev />
-              <Pagination.Item active>{1}</Pagination.Item>
-              <Pagination.Item>{2}</Pagination.Item>
-              <Pagination.Item>{3}</Pagination.Item>
-              <Pagination.Next />
+              <Pagination.Prev 
+                  onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                />
+                {[...Array(totalPages)].map((_, index) => (
+                    <Pagination.Item
+                      key={index + 1}
+                      active={index + 1 === currentPage}
+                      onClick={() => handlePageChange(index + 1)}
+                    >
+                      {index + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                  onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+              />
             </Pagination>
 
           </Col>
@@ -223,6 +255,18 @@ function Genres() {
           </Button>
           <Button variant="secondary" onClick={handleDeleteCancel}>
             Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={submitSuccess} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Your submit was completed successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

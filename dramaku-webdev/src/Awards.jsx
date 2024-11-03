@@ -58,6 +58,18 @@ function Awards() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [awardToDelete, setAwardToDelete] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const indexLastItem = currentPage * itemsPerPage;
+  const indexFirstItem = indexLastItem - itemsPerPage;
+  const currentAwards = awards.slice(indexFirstItem, indexLastItem);
+  const totalPages = Math.ceil(awards.length/itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     fetchAwards();
@@ -79,12 +91,12 @@ function Awards() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (awards.some(award => award.award === newAward)) {
+      alert('This award already exists. Please enter a different award.'); // You can replace this with a more user-friendly modal or toast notification
+      return;
+    }
+    
     try {
-      if (!newAward || newAward.trim() === '') {
-        alert('Award name cannot be empty');
-        return;
-      }
-
       const response = await fetch('http://localhost:5000/awards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,11 +111,14 @@ function Awards() {
       const newAwardData = await response.json();
       setAwards(prevAwards => [...prevAwards, newAwardData]);
       setNewAward('');
+      setSubmitSuccess(true);
     } catch (error) {
       console.error('Error adding award:', error);
       alert(error.message);
     }
   };
+
+  const handleClose = () => setSubmitSuccess(false);
 
   const handleEdit = (award) => {
     setEditingAward({
@@ -168,12 +183,9 @@ function Awards() {
     setAwardToDelete(null);
   };
 
-  const filteredAwards = awards.filter(award =>
+  const filteredAwards = currentAwards.filter(award =>
     award && award.award ? award.award.toLowerCase().includes(searchTerm.toLowerCase()) : false
   );
-
-  // Debug log
-  console.log('Filtered awards:', filteredAwards);
 
   return (
     <div>
@@ -233,7 +245,7 @@ function Awards() {
                 <tbody>
                   {filteredAwards.map((award, index) => (
                     <tr key={award.award_id} className="table-light">
-                      <th scope="row">{index + 1}</th>
+                      <th scope="row">{index + 1 + (currentPage - 1) * itemsPerPage}</th>
                       <td style={{ 
                         maxWidth: '60%', 
                         textAlign: 'left', 
@@ -283,11 +295,23 @@ function Awards() {
             </div>
 
             <Pagination className='justify-content-end'>
-              <Pagination.Prev />
-              <Pagination.Item active>{1}</Pagination.Item>
-              <Pagination.Item>{2}</Pagination.Item>
-              <Pagination.Item>{3}</Pagination.Item>
-              <Pagination.Next />
+              <Pagination.Prev 
+                onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
+              {[...Array(totalPages)].map((_, index) => (
+                  <Pagination.Item
+                    key={index + 1}
+                    active={index + 1 === currentPage}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+               ))}
+              <Pagination.Next
+                onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
             </Pagination>
           </Col>
         </Row>
@@ -306,6 +330,18 @@ function Awards() {
           </Button>
           <Button variant="secondary" onClick={handleDeleteCancel}>
             Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={submitSuccess} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Your submit was completed successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

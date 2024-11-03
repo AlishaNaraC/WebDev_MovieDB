@@ -16,7 +16,6 @@ import VaildateDramas from './ValidateDramas';
 import Users from './Users';
 import Profile from './Profile';
 import NotFound from './NotFound';
-
 function App() {
   return (
     <Router>

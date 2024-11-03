@@ -13,6 +13,18 @@ function Countries() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [countryToDelete, setCountryToDelete] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const indexLastItem = currentPage * itemsPerPage;
+  const indexFirstItem = indexLastItem - itemsPerPage;
+  const currentCountries = countries.slice(indexFirstItem, indexLastItem);
+  const totalPages = Math.ceil(countries.length/itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     fetchCountries();
@@ -30,6 +42,10 @@ function Countries() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (countries.some(country => country.country === newCountry)) {
+      alert('This country already exists. Please enter a different country.'); // You can replace this with a more user-friendly modal or toast notification
+      return;
+    }
     try {
       const response = await fetch('http://localhost:5000/countries', {
         method: 'POST',
@@ -40,11 +56,14 @@ function Countries() {
         const newCountryData = await response.json();
         setCountries(prevCountries => [...prevCountries, newCountryData]);
         setNewCountry('');
+        setSubmitSuccess(true);
       }
     } catch (error) {
       console.error('Error adding country:', error);
     }
   };
+
+  const handleClose = () => setSubmitSuccess(false);
 
   const handleEdit = (country) => {
     setEditingCountry({ ...country });
@@ -96,7 +115,7 @@ function Countries() {
     setCountryToDelete(null);
   };
 
-  const filteredCountries = countries.filter(country =>
+  const filteredCountries = currentCountries.filter(country =>
     country.country.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -158,7 +177,7 @@ function Countries() {
                 <tbody>
                   {filteredCountries.map((country, index) => (
                     <tr key={country.country_id} className="table-light">
-                      <th scope="row">{index + 1}</th>
+                      <th scope="row">{index + 1 + (currentPage - 1) * itemsPerPage}</th>
                       <td>
                         {editingCountry && editingCountry.country_id === country.country_id ? (
                           <input
@@ -198,11 +217,23 @@ function Countries() {
             </div>
 
             <Pagination className='justify-content-end'>
-              <Pagination.Prev />
-              <Pagination.Item active>{1}</Pagination.Item>
-              <Pagination.Item>{2}</Pagination.Item>
-              <Pagination.Item>{3}</Pagination.Item>
-              <Pagination.Next />
+              <Pagination.Prev 
+                onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
+              {[...Array(totalPages)].map((_, index) => (
+                  <Pagination.Item
+                    key={index + 1}
+                    active={index + 1 === currentPage}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+               ))}
+              <Pagination.Next
+                onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
             </Pagination>
 
           </Col>
@@ -223,6 +254,18 @@ function Countries() {
           </Button>
           <Button variant="secondary" onClick={handleDeleteCancel}>
             Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={submitSuccess} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Your submit was completed successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

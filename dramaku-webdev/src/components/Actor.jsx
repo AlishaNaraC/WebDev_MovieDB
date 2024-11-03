@@ -8,7 +8,7 @@ function Actor({ actors }){
                         <div className="actor-card">
                             <img src={actor.poster} alt={actor.name} className="img-fluid" />
                             <div className="actor-card-content">
-                                <h3>{actor.name}</h3>
+                                <h4>{actor.name}</h4>
                             </div>
                         </div>
                     </div>
