@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import './script.js';
 import './index.css';
 import HeaderCMS from './components/HeaderCMS';
@@ -10,39 +11,152 @@ import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Container, Row, Col, Table, Pagination } from 'react-bootstrap';
 
 function ValidateDramas() {
+  const [dramas, setDramas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedDrama, setSelectedDrama] = useState(null);
+  const [filter, setFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-// Function to open the modal
-const handleEditClick = (drama) => {
-  setSelectedDrama(drama); // Save the clicked drama info (if needed)
-  setShowModal(true);
-};
+  // Fetch dramas from backend
+  useEffect(() => {
+    fetchDramas();
+  }, [currentPage, itemsPerPage, filter]);
 
-// Function to close the modal
-const handleCloseModal = () => {
-  setShowModal(false);
-  setSelectedDrama(null); // Reset selected drama
-};
+  const fetchDramas = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/dramas/pending`, {
+        params: {
+          page: currentPage,
+          limit: itemsPerPage,
+          filter: filter,
+          search: searchQuery
+        }
+      });
+      setDramas(response.data.dramas);
+      setTotalPages(Math.ceil(response.data.total / itemsPerPage));
+    } catch (error) {
+      alert('Failed to fetch dramas');
+      console.error('Error fetching dramas:', error);
+    }
+  };
 
-const dramas = [
-  {
-    contributor: 'SeriesStreamer',
-    title: 'Young Sheldon',
-    actors: 'Iain Armitage',
-    genres: 'Comedy, Drama',
-    synopsis: 'Never get bored, even it has a lot of episodes, which more than one hundred, I watched all of them',
-    status: 'Unapproved',
-  },
-  {
-    contributor: 'asdfghjkl',
-    title: 'Dark',
-    actors: 'German people',
-    genres: 'Thriller, Mystery, Sci-Fi',
-    synopsis: 'Confused but entertaining',
-    status: 'Unapproved',
-  },
-];
+  // Handle drama approval
+  // const handleApproveDrama = async (dramaId) => {
+  //   try {
+  //     await axios.patch(`${process.env.REACT_APP_API_URL}/api/dramas/${dramaId}/approve`);
+  //     alert('Drama approved successfully');
+  //     fetchDramas(); 
+  //   } catch (error) {
+  //     alert('Failed to approve drama');
+  //     console.error('Error approving drama:', error);
+  //   }
+  // };
+
+  // Handle drama deletion
+  const handleDeleteDrama = async (dramaId) => {
+    if (window.confirm('Are you sure you want to delete this drama?')) {
+      try {
+        await axios.delete(`${process.env.REACT_APP_API_URL}/api/dramas/${dramaId}`);
+        alert('Drama deleted successfully');
+        fetchDramas(); // Refresh the list
+      } catch (error) {
+        alert('Failed to delete drama');
+        console.error('Error deleting drama:', error);
+      }
+    }
+  };
+
+  // Handle bulk actions
+  const handleBulkAction = async (action) => {
+    const selectedIds = dramas
+      .filter(drama => drama.isSelected)
+      .map(drama => drama.id);
+
+    if (selectedIds.length === 0) {
+      alert('Please select at least one drama');
+      return;
+    }
+
+    try {
+      if (action === 'approve') {
+        await axios.patch(`${process.env.REACT_APP_API_URL}/api/dramas/bulk-approve`, {
+          dramaIds: selectedIds
+        });
+        alert('Selected dramas approved successfully');
+      } else if (action === 'delete') {
+        if (window.confirm('Are you sure you want to delete the selected dramas?')) {
+          await axios.delete(`${process.env.REACT_APP_API_URL}/api/dramas/bulk-delete`, {
+            data: { dramaIds: selectedIds }
+          });
+          alert('Selected dramas deleted successfully');
+        }
+      }
+      fetchDramas();
+    } catch (error) {
+      alert(`Failed to ${action} dramas`);
+      console.error(`Error performing bulk ${action}:`, error);
+    }
+  };
+
+  // Handle search
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  // Add these new handler functions
+  const handleEditClick = (drama) => {
+    setSelectedDrama(drama);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedDrama(null);
+  };
+
+  // Update the table body to include new functionality
+  const renderTableBody = () => (
+    <tbody id="formApprove">
+      {dramas.map((drama) => (
+        <tr className="table-light" key={drama.id}>
+          <th scope="row">
+            <input 
+              type="checkbox" 
+              checked={drama.isSelected}
+              onChange={() => {
+                setDramas(dramas.map(d => 
+                  d.id === drama.id ? {...d, isSelected: !d.isSelected} : d
+                ));
+              }}
+            />
+          </th>
+          <td>{drama.contributor}</td>
+          <td>{drama.title}</td>
+          <td>{drama.actors}</td>
+          <td>{drama.genres}</td>
+          <td>{drama.synopsis}</td>
+          <td>{drama.status}</td>
+          <td>
+            <FontAwesomeIcon
+              icon={faPenToSquare}
+              className="custom-link2"
+              onClick={() => handleEditClick(drama)}
+            />{' '}
+            |{' '}
+            <FontAwesomeIcon
+              icon={faTrashCan}
+              className="custom-link2"
+              onClick={() => handleDeleteDrama(drama.id)}
+            />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  );
 
   return (
     <div>
@@ -61,34 +175,40 @@ const dramas = [
             <div id="table-container" className="content-section">
               <Row>
                 <Col className='md-3'>
-                  <Dropdown>
+                  <Dropdown onSelect={(value) => setFilter(value)}>
                     <label htmlFor="dropdownapprove-filter" className="btn-label me-2">Filtered by:</label>
                     <Dropdown.Toggle variant='secondary' id='dropdownapprove-filter'>
-                      None
+                      {filter === 'all' ? 'All' : filter === 'approved' ? 'Approved' : 'Unapproved'}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item href='#'>Approved</Dropdown.Item>
-                      <Dropdown.Item href='#'>Unapproved</Dropdown.Item>
+                      <Dropdown.Item eventKey="all">All</Dropdown.Item>
+                      <Dropdown.Item eventKey="approved">Approved</Dropdown.Item>
+                      <Dropdown.Item eventKey="unapproved">Unapproved</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </Col>
                 <Col className='md-6'>
-                  <Dropdown>
-                      <label htmlFor="dropdownshows" className="btn-label me-2">Shows:</label>
-                      <Dropdown.Toggle variant='secondary' id="dropdownshows">
-                        10
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item href='#'>25</Dropdown.Item>
-                        <Dropdown.Item href='#'>50</Dropdown.Item>
-                        <Dropdown.Item href='#'>100</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                  <Dropdown onSelect={(value) => setItemsPerPage(Number(value))}>
+                    <label htmlFor="dropdownshows" className="btn-label me-2">Shows:</label>
+                    <Dropdown.Toggle variant='secondary' id="dropdownshows">
+                      {itemsPerPage}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item eventKey="10">10</Dropdown.Item>
+                      <Dropdown.Item eventKey="25">25</Dropdown.Item>
+                      <Dropdown.Item eventKey="50">50</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </Col>
                 <Col className='md-2'>
                   <div className="search-cms-container">
-                      <input type="text" placeholder="Search Drama" />
-                      <i className='bx bx-search'></i>
+                    <input 
+                      type="text" 
+                      placeholder="Search Drama" 
+                      value={searchQuery}
+                      onChange={handleSearch}
+                    />
+                    <i className='bx bx-search'></i>
                   </div>
                 </Col>
               </Row>
@@ -107,31 +227,7 @@ const dramas = [
                     </tr>
                   </thead>
                   <tbody id="formApprove">
-                    {dramas.map((drama, index) => (
-                      <tr className="table-light" key={index}>
-                        <th scope="row">
-                          <input type="checkbox" name="check" value="Value 1" />
-                        </th>
-                        <td>{drama.contributor}</td>
-                        <td>{drama.title}</td>
-                        <td>{drama.actors}</td>
-                        <td>{drama.genres}</td>
-                        <td>{drama.synopsis}</td>
-                        <td>{drama.status}</td>
-                        <td>
-                          <FontAwesomeIcon
-                            icon={faPenToSquare}
-                            className="custom-link2"
-                            onClick={() => handleEditClick(drama)} // Show modal on icon click
-                          />{' '}
-                          |{' '}
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="custom-link2"
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                    {renderTableBody()}
                   </tbody>
               </Table>
             </div>
@@ -139,36 +235,45 @@ const dramas = [
             <Row>
               <Col className='md-4 act-comment'>
                 <ButtonGroup>
-                    <DropdownButton as={ButtonGroup} title="Select" id="bg-nested-dropdown" variant="outline-secondary">
-                      <Dropdown.Item eventKey="1">All</Dropdown.Item>
-                      <Dropdown.Item eventKey="2">Unapproved</Dropdown.Item>
-                      <Dropdown.Item eventKey="3">Approved</Dropdown.Item>
-                      <Dropdown.Item eventKey="4">None</Dropdown.Item>
-                      {/* <ul className="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <li><a className="dropdown-item" href="#" onClick={() => selectAllComment()}>All</a></li>
-                        <li><a className="dropdown-item" href="#" onClick={() => selectUnappComment()}>Unapproved</a></li>
-                        <li><a className="dropdown-item" href="#" onClick={() => selectAppComment()}>Approved</a></li>
-                        <li><a className="dropdown-item" href="#" onClick={() => selectNoneComment()}>None</a></li>
-                      </ul> */}
-                    </DropdownButton>
-                    <Button variant="primary">Approve</Button>
-                    <Button variant="danger">Delete</Button>
+                    <Button variant="primary" onClick={() => handleBulkAction('approve')}>
+                      Approve Selected
+                    </Button>
+                    <Button variant="danger" onClick={() => handleBulkAction('delete')}>
+                      Delete Selected
+                    </Button>
                   </ButtonGroup>
               </Col>
               <Col className='md-4'>
                 <Pagination className='justify-content-end'>
-                  <Pagination.Prev />
-                  <Pagination.Item active>{1}</Pagination.Item>
-                  <Pagination.Item>{2}</Pagination.Item>
-                  <Pagination.Item>{3}</Pagination.Item>
-                  <Pagination.Next />
+                  <Pagination.Prev 
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  />
+                  {[...Array(totalPages)].map((_, idx) => (
+                    <Pagination.Item
+                      key={idx + 1}
+                      active={currentPage === idx + 1}
+                      onClick={() => setCurrentPage(idx + 1)}
+                    >
+                      {idx + 1}
+                    </Pagination.Item>
+                  ))}
+                  <Pagination.Next 
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  />
                 </Pagination>
               </Col>
             </Row>
           </Col>
         </Row>
         {showModal && (
-          <ModalCMS show={showModal} onHide={handleCloseModal} />
+          <ModalCMS 
+            show={showModal} 
+            onHide={handleCloseModal} 
+            drama={selectedDrama}
+            onUpdate={fetchDramas}
+          />
         )}
       </Container>
     </div>
