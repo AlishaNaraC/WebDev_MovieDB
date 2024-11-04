@@ -711,7 +711,7 @@ app.get("/reviews", async(req,res) =>{
     }
 });
 
-// get all review in a movie
+// get all reviews in a movie
 app.get("/reviews/:id", async(req,res) =>{
     const {id} = req.params;
     try {
@@ -719,9 +719,10 @@ app.get("/reviews/:id", async(req,res) =>{
         `SELECT c.*
             FROM comments c
             JOIN dramas d ON d.drama_id = c.drama_id
-            WHERE c.drama_id = $1
+            WHERE c.drama_id = $1 AND c.approval = 'Approved' 
             ORDER BY c.created_at ASC`,
         [id]);
+        console.log("Fetched Reviews:", allReviews.rows);
         res.json(allReviews.rows);
     } catch (err) {
         console.error(err.message);
@@ -878,7 +879,7 @@ app.post("/movies", async(req,res) => {
             `INSERT INTO dramas (
                 title, alt_title, release_d, country, synopsis, 
                 trailer, status, rating, tviews
-            ) VALUES ($1, $2, $3, $4, $5, $6, 'Ongoing', 0, 0) 
+            ) VALUES ($1, $2, $3, $4, $5, $6, 'Unapproved', 0, 0) 
             RETURNING drama_id`,
             [title, altTitle, release_d, country, synopsis, trailer]
         );
@@ -944,10 +945,10 @@ app.post("/movies", async(req,res) => {
     }
 });
 
-// Modify the pending dramas endpoint
-app.get("/api/dramas/pending", async (req, res) => {
+// Add this endpoint for fetching dramas with status
+app.get("/api/dramas/pending", async(req, res) => {
     try {
-        const { page = 1, limit = 10, filter = 'all' } = req.query;
+        const { page = 1, limit = 10, filter = 'all', search = '' } = req.query;
         const offset = (page - 1) * limit;
 
         let query = `
@@ -955,47 +956,64 @@ app.get("/api/dramas/pending", async (req, res) => {
                 d.drama_id as id,
                 d.title,
                 d.synopsis,
-                d.status,
-                COALESCE(u.username, 'Anonymous') as contributor,
+                d.approval::text as status,
                 STRING_AGG(DISTINCT g.genres, ', ') as genres,
                 STRING_AGG(DISTINCT a.actor_name, ', ') as actors
             FROM dramas d
-            LEFT JOIN users u ON d.contributor_id = u.user_id
             LEFT JOIN genre_drama gd ON d.drama_id = gd.drama_id
             LEFT JOIN genres g ON gd.genre_id = g.genre_id
             LEFT JOIN actor_drama ad ON d.drama_id = ad.drama_id
             LEFT JOIN actors a ON ad.actor_id = a.actor_id
             WHERE 1=1
-            ${filter === 'approved' ? "AND d.status = 'Approved'" : 
-              filter === 'unapproved' ? "AND d.status = 'Pending'" : ''}
-            GROUP BY d.drama_id, d.title, d.synopsis, d.status, u.username
+            ${filter === 'approved' ? "AND d.approval = 'Approved'::vapprove" : 
+              filter === 'unapproved' ? "AND d.approval = 'Unapproved'::vapprove" : ''}
+            ${search ? "AND (LOWER(d.title) LIKE LOWER($3) OR LOWER(d.synopsis) LIKE LOWER($3))" : ''}
+            GROUP BY d.drama_id, d.title, d.synopsis, d.approval
             ORDER BY d.drama_id DESC
             LIMIT $1 OFFSET $2
         `;
 
+        const queryParams = [limit, offset];
+        if (search) {
+            queryParams.push(`%${search}%`);
+        }
+
         const [dramas, countResult] = await Promise.all([
-            pool.query(query, [limit, offset]),
+            pool.query(query, queryParams),
             pool.query(`
                 SELECT COUNT(DISTINCT d.drama_id) 
                 FROM dramas d
                 WHERE 1=1 
-                ${filter === 'approved' ? "AND d.status = 'Approved'" : 
-                  filter === 'unapproved' ? "AND d.status = 'Pending'" : ''}
-            `)
+                ${filter === 'approved' ? "AND d.approval = 'Approved'::vapprove" : 
+                  filter === 'unapproved' ? "AND d.approval = 'Unapproved'::vapprove" : ''}
+                ${search ? "AND (LOWER(d.title) LIKE LOWER($1) OR LOWER(d.synopsis) LIKE LOWER($1))" : ''}
+            `, search ? [`%${search}%`] : [])
         ]);
 
-        // Add isSelected property to each drama
-        const dramasWithSelection = dramas.rows.map(drama => ({
-            ...drama,
-            isSelected: false
-        }));
-
         res.json({
-            dramas: dramasWithSelection,
+            dramas: dramas.rows.map(drama => ({
+                ...drama,
+                isSelected: false
+            })),
             total: parseInt(countResult.rows[0].count)
         });
     } catch (err) {
-        console.error("Error fetching pending dramas:", err);
+        console.error("Error fetching dramas:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Add bulk delete endpoint
+app.delete("/api/dramas/bulk-delete", async (req, res) => {
+    try {
+        const { dramaIds } = req.body;
+        await pool.query(
+            "DELETE FROM dramas WHERE drama_id = ANY($1::int[])",
+            [dramaIds]
+        );
+        res.json({ message: "Dramas deleted successfully" });
+    } catch (err) {
+        console.error("Error bulk deleting dramas:", err);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -1005,7 +1023,7 @@ app.patch("/api/dramas/:id/approve", async (req, res) => {
     try {
         const { id } = req.params;
         await pool.query(
-            "UPDATE dramas SET status = 'Approved' WHERE drama_id = $1",
+            "UPDATE dramas SET approval = 'Approved'::vapprove WHERE drama_id = $1",
             [id]
         );
         res.json({ message: "Drama approved successfully" });
@@ -1020,12 +1038,83 @@ app.patch("/api/dramas/bulk-approve", async (req, res) => {
     try {
         const { dramaIds } = req.body;
         await pool.query(
-            "UPDATE dramas SET status = 'Approved' WHERE drama_id = ANY($1::int[])",
+            "UPDATE dramas SET approval = 'Approved'::vapprove WHERE drama_id = ANY($1::int[])",
             [dramaIds]
         );
         res.json({ message: "Dramas approved successfully" });
     } catch (err) {
         console.error("Error bulk approving dramas:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Add endpoint for updating drama status
+app.patch("/api/dramas/:id/status", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        await pool.query(
+            "UPDATE dramas SET approval = $1::vapprove WHERE drama_id = $2",
+            [status, id]
+        );
+        res.json({ message: "Drama status updated successfully" });
+    } catch (err) {
+        console.error("Error updating drama status:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Update the bulk approve endpoint to be more flexible
+app.patch("/api/dramas/bulk-approve", async (req, res) => {
+    try {
+        const { dramaIds } = req.body;
+        
+        await pool.query(
+            "UPDATE dramas SET approval = 'Approved'::vapprove WHERE drama_id = ANY($1::int[])",
+            [dramaIds]
+        );
+        res.json({ message: "Dramas approved successfully" });
+    } catch (err) {
+        console.error("Error bulk updating dramas:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Add this new endpoint for fetching drama details for the modal
+app.get("/api/dramas/:id/details", async(req, res) => {
+    try {
+        const { id } = req.params;
+        const drama = await pool.query( 
+            `SELECT d.*,
+                STRING_AGG(DISTINCT g.genres, ', ') AS genres,
+                STRING_AGG(DISTINCT av.availability, ', ') AS availability,
+                d.approval::text as status
+            FROM dramas d
+            LEFT JOIN genre_drama gd ON d.drama_id = gd.drama_id
+            LEFT JOIN genres g ON gd.genre_id = g.genre_id
+            LEFT JOIN avail_drama ad ON d.drama_id = ad.drama_id
+            LEFT JOIN availability av ON ad.avail_id = av.avail_id
+            WHERE d.drama_id = $1
+            GROUP BY d.drama_id`, 
+            [id]
+        );
+
+        const actors = await pool.query(
+            `SELECT a.actor_name, a.actor_poster, a.birth_date
+            FROM actors a
+            JOIN actor_drama ad ON a.actor_id = ad.actor_id
+            WHERE ad.drama_id = $1`,
+            [id]
+        );
+
+        const dramaDetails = {
+            ...drama.rows[0],
+            actors: actors.rows
+        };
+        res.json(dramaDetails);
+    } catch (err) {
+        console.error("Error fetching drama details:", err);
         res.status(500).json({ error: "Server error" });
     }
 });

@@ -8,7 +8,7 @@ import CardDetail from './components/CardDetail';
 import Actor from './components/Actor';
 import StarRating from './components/StarRating';
 import { jwtDecode } from 'jwt-decode';
-import Button from 'react-bootstrap/Button';
+import {Button, Modal} from 'react-bootstrap/Button';
 import {FaStar} from "react-icons/fa";
 
 
@@ -22,6 +22,7 @@ function DetailPage() {
     const [username, setUser] = useState(null);
     const [reviewError, setReviewError] = useState("");
     const [reviews, setReviews] = useState([]);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
     useEffect(() =>{
         const token = document.cookie.split('; ').find(row => row.startsWith('token='));
@@ -75,10 +76,10 @@ function DetailPage() {
             });
             if (response.ok) {
                 const newReview = { user_id: username, drama_id: id, rate: rating, comment, created_at: new Date().toISOString() };
-                setReviews(prevReviews => [...prevReviews, newReview]);
                 setComment("");
                 setRating(null);
                 setReviewError("");
+                setSubmitSuccess(true);
             } else {
                 setComment("");
                 setRating(null);
@@ -90,6 +91,8 @@ function DetailPage() {
             setReviewError("An error occurred while submitting your review.");
         }
     }
+
+    const handleClose = () => setSubmitSuccess(false);
 
     useEffect(() => {
         const getReviews = async () => {
@@ -194,6 +197,18 @@ function DetailPage() {
                     )}
                 </div>
             </main>
+            <Modal show={submitSuccess} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Your submit was completed successfully! 
+                        Your review will be visible after admin approval.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

@@ -10,6 +10,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Container, Row, Col, Table, Pagination } from 'react-bootstrap';
 
+// Update the status options
+const STATUS_OPTIONS = {
+    UNAPPROVED: 'Unapproved',
+    APPROVED: 'Approved'
+};
+
 function ValidateDramas() {
   const [dramas, setDramas] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -23,11 +29,11 @@ function ValidateDramas() {
   // Fetch dramas from backend
   useEffect(() => {
     fetchDramas();
-  }, [currentPage, itemsPerPage, filter]);
+  }, [currentPage, itemsPerPage, filter, searchQuery]);
 
   const fetchDramas = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/dramas/pending`, {
+      const response = await axios.get('http://localhost:5000/api/dramas/pending', {
         params: {
           page: currentPage,
           limit: itemsPerPage,
@@ -35,25 +41,31 @@ function ValidateDramas() {
           search: searchQuery
         }
       });
-      setDramas(response.data.dramas);
-      setTotalPages(Math.ceil(response.data.total / itemsPerPage));
+      
+      if (response.data && response.data.dramas) {
+        setDramas(response.data.dramas);
+        setTotalPages(Math.ceil(response.data.total / itemsPerPage));
+      } else {
+        console.error('Invalid response format:', response.data);
+        alert('Failed to fetch dramas: Invalid response format');
+      }
     } catch (error) {
-      alert('Failed to fetch dramas');
       console.error('Error fetching dramas:', error);
+      alert('Failed to fetch dramas: ' + (error.response?.data?.error || error.message));
     }
   };
 
   // Handle drama approval
-  // const handleApproveDrama = async (dramaId) => {
-  //   try {
-  //     await axios.patch(`${process.env.REACT_APP_API_URL}/api/dramas/${dramaId}/approve`);
-  //     alert('Drama approved successfully');
-  //     fetchDramas(); 
-  //   } catch (error) {
-  //     alert('Failed to approve drama');
-  //     console.error('Error approving drama:', error);
-  //   }
-  // };
+  const handleApproveDrama = async (dramaId) => {
+    try {
+      await axios.patch(`${process.env.REACT_APP_API_URL}/api/dramas/${dramaId}/approve`);
+      alert('Drama approved successfully');
+      fetchDramas(); 
+    } catch (error) {
+      alert('Failed to approve drama');
+      console.error('Error approving drama:', error);
+    }
+  };
 
   // Handle drama deletion
   const handleDeleteDrama = async (dramaId) => {
@@ -118,44 +130,65 @@ function ValidateDramas() {
     setSelectedDrama(null);
   };
 
+  // Add this function to handle status updates in the modal
+  const handleStatusUpdate = async (dramaId, newStatus) => {
+    try {
+      await axios.patch(`${process.env.REACT_APP_API_URL}/api/dramas/${dramaId}/status`, {
+        status: newStatus
+      });
+      fetchDramas();
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
   // Update the table body to include new functionality
   const renderTableBody = () => (
-    <tbody id="formApprove">
-      {dramas.map((drama) => (
-        <tr className="table-light" key={drama.id}>
-          <th scope="row">
-            <input 
-              type="checkbox" 
-              checked={drama.isSelected}
-              onChange={() => {
-                setDramas(dramas.map(d => 
-                  d.id === drama.id ? {...d, isSelected: !d.isSelected} : d
-                ));
-              }}
-            />
-          </th>
-          <td>{drama.contributor}</td>
-          <td>{drama.title}</td>
-          <td>{drama.actors}</td>
-          <td>{drama.genres}</td>
-          <td>{drama.synopsis}</td>
-          <td>{drama.status}</td>
-          <td>
-            <FontAwesomeIcon
-              icon={faPenToSquare}
-              className="custom-link2"
-              onClick={() => handleEditClick(drama)}
-            />{' '}
-            |{' '}
-            <FontAwesomeIcon
-              icon={faTrashCan}
-              className="custom-link2"
-              onClick={() => handleDeleteDrama(drama.id)}
-            />
-          </td>
+    <>
+      {dramas.length === 0 ? (
+        <tr>
+          <td colSpan="7" className="text-center">No dramas found</td>
         </tr>
-      ))}
-    </tbody>
+      ) : (
+        dramas.map((drama) => (
+          <tr key={drama.id}>
+            <td>
+              <input 
+                type="checkbox" 
+                checked={drama.isSelected || false}
+                onChange={() => {
+                  setDramas(dramas.map(d => 
+                    d.id === drama.id ? {...d, isSelected: !d.isSelected} : d
+                  ));
+                }}
+              />
+            </td>
+            <td>{drama.title}</td>
+            <td>{drama.actors}</td>
+            <td>{drama.genres}</td>
+            <td>{drama.synopsis}</td>
+            <td>
+              <span className={`status-${drama.status.toLowerCase()}`}>
+                {drama.status}
+              </span>
+            </td>
+            <td>
+              <FontAwesomeIcon
+                icon={faPenToSquare}
+                className="custom-link2 me-2"
+                onClick={() => handleEditClick(drama)}
+              />
+              <FontAwesomeIcon
+                icon={faTrashCan}
+                className="custom-link2"
+                onClick={() => handleDeleteDrama(drama.id)}
+              />
+            </td>
+          </tr>
+        ))
+      )}
+    </>
   );
 
   return (
@@ -178,7 +211,8 @@ function ValidateDramas() {
                   <Dropdown onSelect={(value) => setFilter(value)}>
                     <label htmlFor="dropdownapprove-filter" className="btn-label me-2">Filtered by:</label>
                     <Dropdown.Toggle variant='secondary' id='dropdownapprove-filter'>
-                      {filter === 'all' ? 'All' : filter === 'approved' ? 'Approved' : 'Unapproved'}
+                      {filter === 'all' ? 'All' : 
+                       filter === 'approved' ? 'Approved' : 'Unapproved'}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item eventKey="all">All</Dropdown.Item>
@@ -217,7 +251,6 @@ function ValidateDramas() {
                 <thead>
                     <tr>
                       <th scope="col"></th>
-                      <th scope="col">Contributor</th>
                       <th scope="col">Drama</th>
                       <th scope="col" className="med-column">Actors</th>
                       <th scope="col" className="med-column">Genres</th>
@@ -273,6 +306,7 @@ function ValidateDramas() {
             onHide={handleCloseModal} 
             drama={selectedDrama}
             onUpdate={fetchDramas}
+            onStatusUpdate={handleStatusUpdate}
           />
         )}
       </Container>
