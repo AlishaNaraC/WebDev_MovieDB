@@ -689,8 +689,19 @@ app.post("/reviews", async(req, res) =>{
             VALUES ($1, $2, $3, $4, $5) 
             RETURNING *`,
             [username, id, rating, comment, approve]
-        );   
-        res.json(addreview);     
+        ); 
+        
+        const avgResult = await pool.query(
+            `SELECT AVG(rate) AS avg_rating FROM comments WHERE drama_id = $1`,
+            [id]
+        );
+        const avgRating = parseFloat(avgResult.rows[0].avg_rating).toFixed(1);
+
+        await pool.query(
+            `UPDATE dramas SET rating = $1 WHERE drama_id = $2`,
+            [avgRating, id]
+        );
+        res.status(201).json(addreview.rows[0]);     
     } catch (err) {
         console.error(err.message);
     }
@@ -733,10 +744,31 @@ app.get("/reviews/:id", async(req,res) =>{
 app.delete("/reviews/:id", async(req, res) =>{
     const {id} = req.params;
     try {
-        const delReview = await pool.query(
-            `DELETE FROM comments
-            WHERE comment_id = $1`,
+        const reviewResult = await pool.query(
+            `SELECT drama_id FROM comments WHERE comment_id = $1`,
             [id]
+        );
+
+        if (reviewResult.rows.length === 0) {
+            return res.status(404).json({ error: "Review not found" });
+        }
+        const dramaId = reviewResult.rows[0].drama_id;
+
+        // Delete the review
+        await pool.query(
+            `DELETE FROM comments WHERE comment_id = $1`,
+            [id]
+        );
+
+        const avgResult = await pool.query(
+            `SELECT AVG(rate) AS avg_rating FROM comments WHERE drama_id = $1`,
+            [dramaId]
+        );
+        const avgRating = avgResult.rows[0].avg_rating ? parseFloat(avgResult.rows[0].avg_rating).toFixed(1) : "0.0";
+
+        await pool.query(
+            `UPDATE dramas SET rating = $1 WHERE drama_id = $2`,
+            [avgRating, dramaId]
         );
         res.status(200).json({ message: "Review deleted successfully" });
     } catch (err) {
@@ -766,6 +798,22 @@ app.get("/users", async (req, res) => {
     try {
         const allUsers = await pool.query("SELECT user_id, username, email, role, TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at, status FROM users ORDER BY username ASC");
         res.json(allUsers.rows);
+    } catch (err) {
+        console.error("Error fetching all users:", err.message);
+        res.status(500).send("Server error");
+    }
+});
+
+// get a user
+app.get("/users/:username", async (req, res) => {
+    const {username} = req.params;
+    try {
+        const aUser = await pool.query(
+            `SELECT user_id, username, email, role, TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at, status 
+            FROM users 
+            WHERE username=$1`,
+        [username]);
+        res.json(aUser.rows[0]);
     } catch (err) {
         console.error("Error fetching all users:", err.message);
         res.status(500).send("Server error");

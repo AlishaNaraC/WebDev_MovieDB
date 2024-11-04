@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import '../index.css';
+import { jwtDecode } from 'jwt-decode';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
+import {Nav, NavDropdown} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [user, setUser] = useState({username: ''});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Dropdown options with plural keys
   const [dropdownOptions, setDropdownOptions] = useState({
@@ -110,6 +118,52 @@ function Header() {
 
     return params;
   };
+
+  useEffect(() => {
+    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token.split('=')[1]);
+        setUser(decodedToken);
+        const fetchUserDetail = async () => {
+          try {
+              const response = await fetch(`http://localhost:5000/users/${decodedToken.username}`, {
+                  method: 'GET',
+                  headers: {
+                      'Authorization': `Bearer ${token.split('=')[1]}`,
+                      'Content-Type': 'application/json',
+                  },
+              });
+
+              if (response.ok) {
+                  const data = await response.json();
+                  setUser(prevUser => ({ 
+                      ...prevUser, 
+                      email: data.email 
+                  }));
+              } else {
+                  console.error('Failed to fetch user email');
+              }
+          } catch (error) {
+              console.error('Error fetching user email:', error);
+          }
+        };
+        fetchUserDetail();
+      } catch (err) {
+        console.error('Error decoding token:', err);
+      }
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      setUser('');
+      setIsLoading(false);
+      navigate('/');
+    }, 1500); // 1.5-second delay
+  };  
 
   // Function to handle search (with or without filters)
   const handleSearchClick = () => {
@@ -243,9 +297,32 @@ function Header() {
 
       <div className="user-buttons-container">
         <div className="user-buttons">
-          <button onClick={handleLoginClick} className="login-button">
-            <b>Login</b>
-          </button>
+          {user ? (
+              <span className="username-display">
+                <FontAwesomeIcon icon={faCircleUser} style={{ fontSize: "25px" }}/>
+                <Nav>
+                    <NavDropdown
+                      id="nav-dropdown-light"
+                      title={<span className="dropdown-title">{user.username}</span>}
+                      menuVariant="light"
+                    >
+                    <NavDropdown.Item>{user.email}</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <Nav.Link onClick={handleLogout}>
+                      {isLoading ? (
+                        <span>Loading...</span> // Display loading text
+                      ) : (
+                        <b>Logout</b>
+                      )}
+                    </Nav.Link>
+                  </NavDropdown>
+                </Nav>
+              </span>
+            ) : (
+              <button onClick={handleLoginClick} className="login-button">
+                <b>Login</b>
+              </button>
+            )}
         </div>
       </div>
     </header>

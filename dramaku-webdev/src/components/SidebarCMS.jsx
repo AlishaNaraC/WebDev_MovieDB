@@ -26,13 +26,15 @@ function SidebarCMS(){
                 navigate('/NotFound');
             }
         } else {
-            navigate('/login');
+            navigate('/NotFound');
         }
     }, [navigate]);
 
     const handleLogout = async () => {
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        navigate('/');
+        setTimeout(()=>{
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            navigate('/');
+        }, 1000);
     };
 
     return(
@@ -43,28 +45,28 @@ function SidebarCMS(){
 
             <Offcanvas show={show} onHide={handleClose} backdrop="static">
                 <Offcanvas.Header closeButton>
-                <Offcanvas.Title><b>DramaKu</b></Offcanvas.Title>
+                <Offcanvas.Title><h4 style={{marginTop:'5px'}}><b>DramaKu</b></h4></Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Nav className='flex-column'>
                         <Nav.Link onClick={() => setOpenDramas(!openDramas)} aria-controls="submenu1" aria-expanded={openDramas}>Dramas</Nav.Link>
                             <Collapse in={openDramas}>
                                 <div id='submenu1'>
-                                    <Nav.Link className='ms-3 my-1' href="./ValidateDramas">Validate</Nav.Link>
-                                    <Nav.Link className='ms-3 my-1' href="./InputDramas">Input New Drama</Nav.Link>
+                                    <Nav.Link className='ms-3 my-1 nav-link' href="./ValidateDramas">Validate</Nav.Link>
+                                    <Nav.Link className='ms-3 my-1 nav-link' href="./InputDramas">Input New Drama</Nav.Link>
                                 </div>
                             </Collapse>
-                        <Nav.Link href="./Countries">Countries</Nav.Link>
-                        <Nav.Link href="./Awards">Awards</Nav.Link>
-                        <Nav.Link href="./Genres">Genres</Nav.Link>
-                        <Nav.Link href="./Actors">Actors</Nav.Link>
-                        <Nav.Link href="./Comments">Comments</Nav.Link>
+                        <Nav.Link href="./Countries" className='nav-link'>Countries</Nav.Link>
+                        <Nav.Link href="./Awards" className='nav-link'>Awards</Nav.Link>
+                        <Nav.Link href="./Genres" className='nav-link'>Genres</Nav.Link>
+                        <Nav.Link href="./Actors" className='nav-link'>Actors</Nav.Link>
+                        <Nav.Link href="./Comments" className='nav-link'>Comments</Nav.Link>
                         <Nav.Link href="./Users">Users</Nav.Link>
                         <Nav.Link onClick={() => setOpenAccount(!openAccount)} aria-controls="submenu2" aria-expanded={openAccount}>Account</Nav.Link>
                             <Collapse in={openAccount}>
                                 <div id='submenu2'>
-                                    <Nav.Link className='ms-3 my-1' href="./Profile">Profile</Nav.Link>
-                                    <Nav.Link className='ms-3 my-1' onClick={handleLogout}>Logout</Nav.Link>
+                                    <Nav.Link className='ms-3 my-1 nav-link' href="./Profile">Profile</Nav.Link>
+                                    <Nav.Link className='ms-3 my-1 nav-link' onClick={handleLogout}>Logout</Nav.Link>
                                 </div>
                             </Collapse>
                     </Nav>

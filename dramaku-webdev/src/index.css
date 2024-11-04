@@ -263,6 +263,7 @@ div.viewport-cms{
     color : white;
     margin-top: 10px;
     margin-left: 50px;
+    cursor: pointer;
 } 
 
 .search-container{
@@ -636,8 +637,8 @@ div.viewport-cms{
     padding: 10px 15px;
     border-radius: 10px;
     border: none;
-    background-color: white;
-    color: black;
+    /* background-color: white; */
+    /* color: black; */
     font-size: 16px;
     cursor: pointer;
 }
@@ -1139,4 +1140,39 @@ input[type="radio"]{
   .input-container {
     padding: 1rem;
   }
+}
+
+.offcanvas .nav-link {
+    font-size:large;
+    color: #000000;
+}
+
+.offcanvas .nav-link:hover {
+    font-size:large;
+    background-color: #d4d7db;
+    color: #000000;
+}
+
+.username-display{
+    display: flex;
+    align-items: center;
+    color: white;
+    margin-top: 20px;
+    margin-right: 25px;
+}
+
+.username-display b{
+    font-weight: 600;
+    font-size: larger;
+    color: #000000;
+}
+
+.dropdown-title{
+    font-weight: 600;
+    font-size:20px;
+    color: white;
+}
+
+#nav-dropdown-light {
+    color: white;
 }

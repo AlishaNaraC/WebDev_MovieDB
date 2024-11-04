@@ -13,7 +13,7 @@ function CardDetail({ imgSrc, title, releaseDate, genres, rating, views, alttitl
                             <p className='detail-text'>{releaseDate}</p>
                             <p className='detail-text'>{synopsis}</p>
                             <p className='detail-text'>{genres}</p>
-                            <p className='detail-text'> Rate {rating}/5 {views} views</p>
+                            <p className='detail-text'> Rate {rating ? rating : "0.0"}/5</p>
                             <p className='detail-text'>{avail}</p>
                         </div>
                 </div>
