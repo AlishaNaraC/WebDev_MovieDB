@@ -198,7 +198,7 @@ app.get("/search", async (req, res) => {
             Alphabet: "d.title ASC",
             Rating: "d.rating DESC",
             Year: "d.release_d DESC",
-            Views: "d.tviews DESC"
+            // Views: "d.tviews DESC"
         };
         searchQuery += ` ORDER BY ${sortingMap[sortedBy] || "d.title ASC"}`;
 
@@ -242,16 +242,17 @@ app.post("/login", async (req, res) =>{
         }
 
         const user = login.rows[0];
+
         if (user.status === 'Suspended') {
             return res.status(403).json({ message: 'Your account has been suspended.' });
         }
         
-        const validPassword = await bcrypt.compare(req.body.password, login.rows[0].password);
+        const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
-        const { username, role } = login.rows[0];
-        const token = jwt.sign({ username, role }, 'jwt-secret-key', { expiresIn: '1d' });
+        const { user_id, username, role } = user;
+        const token = jwt.sign({ user_id, username, role }, 'jwt-secret-key', { expiresIn: '1d' });
         res.cookie('token', token); 
         res.status(200).json({ message: 'Login successful' });
     } catch (err) {
@@ -673,11 +674,11 @@ app.delete("/actors/:id", async(req, res) =>{
 app.post("/reviews", async(req, res) =>{
     let approve = 'Unapproved'; // Default approval
     try {
-        const {username, id, rating, comment} = req.body;
+        const {user_id, id, rating, comment} = req.body;
 
         const existingReview = await pool.query(
             'SELECT * FROM comments WHERE username = $1 AND drama_id = $2',
-            [username, id]
+            [user_id, id]
         );
     
         if (existingReview.rows.length > 0) {
@@ -688,7 +689,7 @@ app.post("/reviews", async(req, res) =>{
             `INSERT INTO comments (username, drama_id, rate, comment, approval) 
             VALUES ($1, $2, $3, $4, $5) 
             RETURNING *`,
-            [username, id, rating, comment, approve]
+            [user_id, id, rating, comment, approve]
         ); 
         
         const avgResult = await pool.query(
@@ -764,7 +765,7 @@ app.delete("/reviews/:id", async(req, res) =>{
             `SELECT AVG(rate) AS avg_rating FROM comments WHERE drama_id = $1`,
             [dramaId]
         );
-        const avgRating = avgResult.rows[0].avg_rating ? parseFloat(avgResult.rows[0].avg_rating).toFixed(1) : "0.0";
+        const avgRating = avgResult.rows[0].avg_rating ? parseFloat(avgResult.rows[0].avg_rating).toFixed(1) : null;
 
         await pool.query(
             `UPDATE dramas SET rating = $1 WHERE drama_id = $2`,
@@ -899,8 +900,8 @@ app.get("/actors", async (req, res) => {
     }
 });
 
-// Add new drama
-app.post("/movies", async(req,res) => {
+// Add a new drama
+app.post("/movies", upload.single('poster'), async(req,res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
@@ -922,14 +923,16 @@ app.post("/movies", async(req,res) => {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
+        const moviePoster = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : null;
+
         // Insert drama
         const dramaResult = await client.query(
             `INSERT INTO dramas (
                 title, alt_title, release_d, country, synopsis, 
-                trailer, status, rating, tviews
-            ) VALUES ($1, $2, $3, $4, $5, $6, 'Unapproved', 0, 0) 
+                trailer, approval, poster
+            ) VALUES ($1, $2, $3, $4, $5, $6, 'Unapproved', $7) 
             RETURNING drama_id`,
-            [title, altTitle, release_d, country, synopsis, trailer]
+            [title, altTitle, release_d, country, synopsis, trailer, moviePoster]
         );
 
         const dramaId = dramaResult.rows[0].drama_id;
@@ -1164,6 +1167,69 @@ app.get("/api/dramas/:id/details", async(req, res) => {
     } catch (err) {
         console.error("Error fetching drama details:", err);
         res.status(500).json({ error: "Server error" });
+    }
+});
+
+// add a movie to wishlist
+app.post("/wishlist", async(req, res) => {
+    const {user_id, drama_id} = req.body;
+
+    try {
+        const checkWishlist = await pool.query(
+            'SELECT * FROM wishlist WHERE user_id = $1 AND drama_id = $2',
+            [user_id, drama_id]
+        );
+    
+        if (checkWishlist.rows.length > 0) {
+            return res.status(409).json({ message: 'Movie is already in the wishlist' });
+        }
+        
+        const result = await pool.query(
+            'INSERT INTO wishlist (user_id, drama_id) VALUES ($1, $2) RETURNING *',
+            [user_id, drama_id]
+        );
+        res.status(201).json({ message: 'Movie added to wishlist', wishlist: result.rows[0] });  
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// show all wishlist of a user
+app.get('/wishlist/:userId', async (req,res) => {
+   const {userId} = req.params;
+   
+   try {
+    const allWishlist = await pool.query(
+        `SELECT w.*, d.*, u.*
+        FROM wishlist w
+        JOIN dramas d ON w.drama_id = d.drama_id
+        JOIN users u ON w.user_id = u.user_id
+        WHERE w.user_id = $1`,
+    [userId]);
+    res.status(200).json(allWishlist.rows);
+   } catch (error) {
+    res.status(500).json({message: 'Server error'});
+   }
+});
+
+// Delete a movie from wishlist
+app.delete('/wishlist/:wishlistId', async (req, res) => {
+    const { wishlistId } = req.params;
+
+    try {
+        const result = await pool.query('DELETE FROM wishlist WHERE wishlist_id = $1 RETURNING *', 
+            [wishlistId]
+        );
+        
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Wishlist item not found' });
+        }
+        
+        res.status(200).json({ message: 'Movie removed from wishlist' });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 

@@ -8,7 +8,7 @@ import CardDetail from './components/CardDetail';
 import Actor from './components/Actor';
 import StarRating from './components/StarRating';
 import { jwtDecode } from 'jwt-decode';
-import {Button, Modal} from 'react-bootstrap/Button';
+import {Button, Modal} from 'react-bootstrap';
 import {FaStar} from "react-icons/fa";
 
 
@@ -19,10 +19,11 @@ function DetailPage() {
     const [isLoggedin, setIsLoggedin] = useState(false);
     const [comment, setComment] = useState("");
     const [rating, setRating] = useState(null);
-    const [username, setUser] = useState(null);
+    const [user, setUser] = useState(null);
     const [reviewError, setReviewError] = useState("");
     const [reviews, setReviews] = useState([]);
     const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [showWishlistModal, setShowWishlistModal] = useState(false);
 
     useEffect(() =>{
         const token = document.cookie.split('; ').find(row => row.startsWith('token='));
@@ -30,7 +31,7 @@ function DetailPage() {
             try {
                 const decodedToken = jwtDecode(token.split('=')[1]);
                 console.log("Decoded Token:", decodedToken);
-                setUser(decodedToken.username);
+                setUser({user_id: decodedToken.user_id, username: decodedToken.username});
                 setIsLoggedin(true);
             } catch (error) {
                 console.error("Invalid token:", error);
@@ -68,14 +69,14 @@ function DetailPage() {
         }
 
         try {
-            const body = {username, id, rating, comment};
+            const body = {user_id: user.username, id, rating, comment};
             const response = await fetch(`http://localhost:5000/reviews`,{
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
                 body: JSON.stringify(body)
             });
             if (response.ok) {
-                const newReview = { user_id: username, drama_id: id, rate: rating, comment, created_at: new Date().toISOString() };
+                // const newReview = { user_id: user.username, drama_id: id, rate: rating, comment, created_at: new Date().toISOString() };
                 setComment("");
                 setRating(null);
                 setReviewError("");
@@ -93,6 +94,31 @@ function DetailPage() {
     }
 
     const handleClose = () => setSubmitSuccess(false);
+
+    const handleWishlist = async () => {
+        if(!isLoggedin){
+            alert('Please log in to add this movie to your wishlist.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/wishlist`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ user_id: user.user_id, drama_id: id })
+            });
+        
+            if (response.ok) {
+                setShowWishlistModal(true);  // Show success modal
+            } else if (response.status === 409) {
+                alert('This movie is already in your wishlist.');  // Inform the user if the movie is already in the wishlist
+            } else {
+                console.error('Failed to add to wishlist');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     useEffect(() => {
         const getReviews = async () => {
@@ -115,6 +141,11 @@ function DetailPage() {
         <div>
             <Header />
             <main className="main">
+                <div className="wishlist-align">
+                    <Button onClick={handleWishlist} className='btn-dark'>
+                        Add to Watch List
+                    </Button>
+                </div>
                 <CardDetail
                     imgSrc={movie.poster}
                     title={movie.title}
@@ -123,7 +154,6 @@ function DetailPage() {
                     synopsis={movie.synopsis}
                     genres={movie.genres}
                     rating={movie.rating}
-                    views={movie.tviews}
                     avail={movie.avail}
                 />
                 <Actor actors={movie.actors} />
@@ -144,13 +174,6 @@ function DetailPage() {
                         <div className="col-md-6">
                             <h4>({reviews.length}) People think about this drama</h4>
                         </div>
-                        {/* <div className="col-md-6">
-                            <label>Filtered by:</label>
-                            <i className="bx bx-star"></i>
-                            <i className="bx bx-star"></i>
-                            <i className="bx bx-star"></i>
-                            <i className="bx bx-star"></i>
-                        </div> */}
                     </div>
 
                     {reviews.map((review, index) => (
@@ -162,7 +185,7 @@ function DetailPage() {
                                         color={"#ffb121"}
                                         style={{ marginLeft: "10px", marginBottom:"5px" }}
                                     />
-                                    {" "}<span>{review.rate} / 5</span> {/* Displaying the rating here */}
+                                    {" "}<span>{review.rate} / 5</span>
                             </p>
                             <p>{review.comment}</p>
                             <p style={{ color: "#9c9c9c" }}>({new Date(review.created_at).toLocaleDateString()})</p>
@@ -171,8 +194,7 @@ function DetailPage() {
                     
                     {isLoggedin ? (
                         <form className="add-review mt-4" onSubmit={onSubmitReview}>
-                            <h4>Add Your Review!</h4>
-                            {/* <p>Name: <input type="text" className="review-input" /></p> */}
+                            <h4><b>Add Your Review!</b></h4>
                             {reviewError && <div className="alert alert-danger">{reviewError}</div>}
                             <div className='mb-3'>Rate:<StarRating rating={rating} setRating={setRating}/></div>
                             <p>Your Thoughts: 
@@ -208,7 +230,18 @@ function DetailPage() {
                         Close
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal>
+            <Modal show={showWishlistModal} onHide={() => setShowWishlistModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Watch List</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>This movie has been added to your watch list!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowWishlistModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

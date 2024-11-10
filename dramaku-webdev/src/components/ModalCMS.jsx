@@ -91,10 +91,10 @@ function ModalCMS({show, onHide, drama, onStatusUpdate}) {
                         </div>
                         
                         {/* Actor Cards */}
-                        <h4 className="mb-3">Cast</h4>
-                        <div className="actor-card-container">
+                        <h4 className="mb-3" style={{ textAlign: 'center' }}>Cast</h4>
+                        <div className="actor-card-container-modal">
                             {dramaDetails?.actors?.map((actor, index) => (
-                                <div className="actor-card" key={index}>
+                                <div className="actor-card-modal" key={index}>
                                     <img 
                                         src={actor.actor_poster || "image/imageactress.jpeg"} 
                                         alt={actor.actor_name} 

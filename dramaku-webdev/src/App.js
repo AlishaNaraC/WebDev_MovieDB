@@ -16,6 +16,8 @@ import VaildateDramas from './ValidateDramas';
 import Users from './Users';
 import Profile from './Profile';
 import NotFound from './NotFound';
+import Wishlist from './Wishlist';
+
 function App() {
   return (
     <Router>
@@ -34,6 +36,7 @@ function App() {
         <Route path="/ValidateDramas" element={<VaildateDramas />} />
         <Route path="/Users" element={<Users />} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/Wishlist" element={<Wishlist />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

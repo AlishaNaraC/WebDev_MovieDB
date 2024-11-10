@@ -15,11 +15,13 @@ const DramaInput = () => {
   const [showAvailSuggestions, setShowAvailSuggestions] = useState(false);
   const [awardInput, setAwardInput] = useState('');
   const [showAwardSuggestions, setShowAwardSuggestions] = useState(false);
+  const [poster, setPosterFile] = useState('');
 
   // States for all form data
   const [formData, setFormData] = useState({
     title: '',
     altTitle: '',
+    poster:'',
     release_d: '',
     country: '',
     synopsis: '',
@@ -80,6 +82,15 @@ const DramaInput = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setPosterFile(file); // Store the file in state
+    setFormData(prev => ({
+      ...prev,
+      poster: file // Assign the file to formData if necessary
+    }));
+  };
+
   // Handle genre selection
   const handleGenreChange = (genreId) => {
     setFormData(prev => ({
@@ -109,13 +120,19 @@ const DramaInput = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/movies', formData);
+      const response = await axios.post('http://localhost:5000/movies', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
       if (response.status === 201) {
         alert('Drama added successfully!');
         // Reset form
         setFormData({
           title: '',
           altTitle: '',
+          poster:'',
           release_d: '',
           country: '',
           synopsis: '',
@@ -218,6 +235,16 @@ const DramaInput = () => {
                     value={formData.altTitle}
                     onChange={handleInputChange}
                   />
+                </div>
+                <div className="input-content-input">
+                  <p>Poster</p>
+                    <input 
+                      type="file"
+                      accept="image/*"
+                      name="imageposter"
+                      value={formData.poster}
+                      onChange={handleFileChange}
+                    />
                 </div>
               </div>
 

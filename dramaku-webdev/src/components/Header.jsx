@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [user, setUser] = useState({username: ''});
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -152,6 +152,8 @@ function Header() {
       } catch (err) {
         console.error('Error decoding token:', err);
       }
+    }else{
+      setUser(null);
     }
   }, []);
 
@@ -159,10 +161,10 @@ function Header() {
     setIsLoading(true);
     setTimeout(() => {
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      setUser('');
+      setUser(null);
       setIsLoading(false);
       navigate('/');
-    }, 1500); // 1.5-second delay
+    }, 1500);
   };  
 
   // Function to handle search (with or without filters)
@@ -201,6 +203,10 @@ function Header() {
     window.location.href = '/';
   };
 
+  const handleWishlist = () => {
+    navigate('/wishlist');
+  };
+
   // Toggle dropdown visibility
   const toggleDropdown = (category) => {
     setDropdownOpen(prevState => ({
@@ -224,7 +230,7 @@ function Header() {
       award: 'awards'
     };
     if (category === 'sortedBy') {
-      return ['Alphabet', 'Rating', 'Year', 'Views'];
+      return ['Alphabet', 'Rating', 'Year'];
     }
     return dropdownOptions[keyMap[category]] || [];
   };
@@ -301,12 +307,16 @@ function Header() {
               <span className="username-display">
                 <FontAwesomeIcon icon={faCircleUser} style={{ fontSize: "25px" }}/>
                 <Nav>
-                    <NavDropdown
-                      id="nav-dropdown-light"
-                      title={<span className="dropdown-title">{user.username}</span>}
-                      menuVariant="light"
-                    >
+                  <NavDropdown
+                    id="nav-dropdown-light"
+                    title={<span className="dropdown-title">{user.username}</span>}
+                    menuVariant="light"
+                  >
                     <NavDropdown.Item>{user.email}</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <Nav.Link onClick={handleWishlist}>
+                      <b>Watch List</b>
+                    </Nav.Link>
                     <NavDropdown.Divider />
                     <Nav.Link onClick={handleLogout}>
                       {isLoading ? (

@@ -49,8 +49,13 @@ function Card() {
     <div>
       <div className='card-container'>
         {dramaMovies.map((movie, index) => (
-          <div className="card" key={index} ref={index === dramaMovies.length - 1 ? lastCard : null}>
-            <img src={movie.poster} onClick={() => handleCardClick(movie.drama_id)} alt={movie.title} />
+          <div 
+            className="card" 
+            key={index} 
+            ref={index === dramaMovies.length - 1 ? lastCard : null}
+            onClick={() => handleCardClick(movie.drama_id)}
+          >
+            <img src={movie.poster} alt={movie.title} />
             <div className="card-content">
               <h3>{movie.title}</h3>
               <p>{movie.release_d}</p>

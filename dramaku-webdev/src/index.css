@@ -191,10 +191,11 @@ th, td {
 
 .actor-card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    justify-content: center;
-    gap: 48px;
-    margin-top: 20px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 30px;
+    margin: 20px auto;
+    justify-items: center;
+    align-items: center;
 }
 
 .actor-card img{
@@ -202,8 +203,9 @@ th, td {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 120px;
-    height: 140px;
+    width: 160px;
+    height: 195px;
+    border-radius: 5px;
 }
 
 .detail-video-container{
@@ -468,6 +470,10 @@ div.viewport-cms{
     gap: 20px;
 }
 
+.card:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
 .card-container-result{
     display: flex;
     justify-content: center;
@@ -477,13 +483,16 @@ div.viewport-cms{
 }
 
 .card{
-    width: 325px;
+    width: 300px;
     background-color: #f0f0f0f0;
     overflow: hidden;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     justify-content: center;
     align-items: center;
-    margin: 20px;
+    margin: 30px;
+    padding: 10px;
+    transition: box-shadow 0.3s;
+    cursor: pointer;
 }
 
 .card-right-info h2::before{
@@ -505,16 +514,15 @@ div.viewport-cms{
     height: 350px;
     object-fit:cover; /* Will fit the image within the bounds without cropping */
     object-position: center;
+    border-radius: 5px;
 }
 
 .card-content{
     padding: 16px;
-    margin-left: 15px; /* Left margin */
-    margin-right: 15px; /* Right margin */
     flex-grow: 1; /* Allow content to grow */
-    display: flex; /* Use flexbox for layout */
+    display:flex; /* Use flexbox for layout */
     flex-direction: column; /* Stack items vertically */
-    justify-content: space-between;
+    justify-content:space-between;
 }
 
 .card-content h3{
@@ -528,14 +536,27 @@ div.viewport-cms{
     line-height: 1.3;
 }
 
-.actor-card-container{
-    display: flex;
+.actor-card-modal img{
+    object-fit: cover;
+    width: 150px;
+    height: 200px;
 }
 
-.actor-card img{
-    object-fit: cover;
+.actor-card-modal {
     width: 175px;
-    height: 200px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+}
+
+.actor-card-container-modal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centers cards within the container */
+    gap: 20px;
+    margin: 20px auto;
 }
 
 .detail-video-container{
@@ -679,13 +700,6 @@ div.viewport-cms{
     line-height: 1.3;
     margin-bottom: 8px;
     padding-right: 50px;
-}
-
-.actor-card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
 }
 
 .actor-card {
@@ -1176,3 +1190,61 @@ input[type="radio"]{
 #nav-dropdown-light {
     color: white;
 }
+
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wishlist-item {
+    display: flex;
+    flex-direction: column;
+    text-align:start;
+    align-items:center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    transition: box-shadow 0.3s;
+}
+
+.wishlist-item:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.wishlist-item img {
+    width: 250px;
+    height: 375px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.wishlist-item h3 {
+    margin: 15px 0 5px;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.wishlist-item p {
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+}
+
+.button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.wishlist-align {
+    width: 75%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
