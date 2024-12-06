@@ -120,11 +120,7 @@ const DramaInput = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/movies', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post('http://localhost:5000/movies', formData);
       
       if (response.status === 201) {
         alert('Drama added successfully!');
@@ -242,7 +238,6 @@ const DramaInput = () => {
                       type="file"
                       accept="image/*"
                       name="imageposter"
-                      value={formData.poster}
                       onChange={handleFileChange}
                     />
                 </div>

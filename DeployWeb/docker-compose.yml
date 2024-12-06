@@ -1,0 +1,47 @@
+# version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./node-dramaku-webdev
+    ports:
+      - "5000:5000" # Map host port 5000 to container port 5000
+    depends_on:
+      - database
+    environment:
+      NODE_ENV: development
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./dramaku-webdev
+    ports:
+      - "3000:3000" # Map host port 3000 to container port 3000 (React development server default)
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: development
+    networks:
+      - app-network
+
+  database:
+    image: postgres:alpine
+    networks:
+      - app-network
+    ports:
+      - "5433:5432" # Adjust this if port 5432 is in use on your host
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: nara3104
+      POSTGRES_DB: moviedb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./local_db_dump.sql:/docker-entrypoint-initdb.d/local_db_dump.sql
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
