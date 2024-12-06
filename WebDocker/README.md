@@ -40,11 +40,11 @@
 	Update the backend/config/db.js file with your PostgreSQL credentials.
 
 4. **Install Dependencies**:
-	# Install backend dependencies
+	#### Install backend dependencies
 	cd dramaku-webdev
 	npm install
 
-	# Install frontend dependencies
+	#### Install frontend dependencies
 	cd ../node-dramaku-webdev
 	npm install
 
